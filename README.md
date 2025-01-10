@@ -1,10 +1,14 @@
-# mlops_project
+# Image Classification using the Fashion-MNIST Dataset
 
-a project for the machine learning operations MSc subject at dtu
+## Project Description
 
-## Project structure
+Fashion-MNIST (FMNIST) is an image dataset consisting of clothing articles from Zalando. It consists of 60,000 images in the training set and 10,000 in the test set. Each image is a 28x28 grayscale image and therefore results in 784 individual pixels per image which are represented as features within the dataset. Additionally, the true label corresponding to each image is known and represented as a column in the dataset. Similar to MNIST, it serves as a benchmark to many modern ML models, but also introduces more complexity at the same time in terms of the images.
 
-The directory structure of the project looks like this:
+The overall goal of the project is to build a trustworthy CNN model by clearly defining and maintaining an MLOps pipeline. For easy and organized collaboration, we will fork the provided MLOps cookiecutter template on GitHub, and then to achieve reproducibility, we aim to utilize Docker.
+
+## Project Structure (TBD)
+
+The directory structure of the project (as per template) looks like this:
 ```txt
 ├── .github/                  # Github actions and dependabot
 │   ├── dependabot.yaml
