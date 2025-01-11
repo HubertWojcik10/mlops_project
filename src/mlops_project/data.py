@@ -62,11 +62,18 @@ class FashionMNISTDataset(Dataset):
         """
         return len(self.images)
 
-    def __getitem__(self, index: int) -> Tuple[np.ndarray | torch.Tensor, int]:
+    def __getitem__(self, index: int) -> Tuple[torch.Tensor, torch.Tensor]:
         """
             Return a given sample from the dataset.
         """
         image, label = self.images[index], self.labels[index]
+        
+        # convert image to tensor and normalize to [0,1]
+        image = torch.tensor(image, dtype=torch.float32) / 255.0
+        
+        # add channel dimension 
+        image = image.unsqueeze(0) # (H, W) -> (1, H, W)
+        label = torch.tensor(label, dtype=torch.long)
 
         if self.transform:
             image = self.transform(image)
@@ -96,7 +103,7 @@ class FashionMNISTDataset(Dataset):
             img.save(dataset_folder / class_name / f"{idx}.png")
 
 
-def preprocess(raw_data_path: Path, output_folder: Path) -> Tuple[Dataset, Dataset]:
+def preprocess(raw_data_path: Path = Path("data/raw"), output_folder: Path = Path("data/processed")) -> Tuple[Dataset, Dataset]:
     """
         Main function to preprocess both training and test datasets.
     """
