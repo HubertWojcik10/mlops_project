@@ -96,7 +96,7 @@ class FashionMNISTDataset(Dataset):
             img.save(dataset_folder / class_name / f"{idx}.png")
 
 
-def preprocess(raw_data_path: Path, output_folder: Path) -> None:
+def preprocess(raw_data_path: Path, output_folder: Path) -> Tuple[Dataset, Dataset]:
     """
         Main function to preprocess both training and test datasets.
     """
@@ -111,6 +111,8 @@ def preprocess(raw_data_path: Path, output_folder: Path) -> None:
     test_dataset.preprocess(output_folder)
 
     print("Preprocessing complete!")
+
+    return train_dataset, test_dataset
 
 
 if __name__ == "__main__":
