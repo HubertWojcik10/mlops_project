@@ -1,35 +1,39 @@
-import torch 
+import torch
 from torch import nn
+import torchvision.models as models
+from torchvision.models import ResNet18_Weights
 
-class Model(nn.Module):
-    """ 
-        A neural network model for the FMNIST task. 
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+class ResNet18ForFMNIST(nn.Module):
     """
-    def __init__(self) -> None:
-        super().__init__()
-        classes_num = 10 # TODO: put in the config
-        dropout_rate = 0.5  # TODO: put in the config
+    ResNet18 model adapted for Fashion MNIST.
+    """
+    def __init__(self, num_classes=10):
+        super(ResNet18ForFMNIST, self).__init__()
+        
+        # Load pre-trained ResNet18 with weights from ImageNet
+        self.resnet18 = models.resnet18(weights=ResNet18_Weights.IMAGENET1K_V1)
+        
+        # Modify the first convolution layer to accept 1 channel (resnet is trained on RGB images)
+        self.resnet18.conv1 = nn.Conv2d(
+            in_channels=1, 
+            out_channels=64, 
+            kernel_size=7, 
+            stride=2, 
+            padding=3, 
+            bias=False
+        )
+        
+        # Modify the fully connected layer to match the number of classes in Fashion MNIST
+        self.resnet18.fc = nn.Linear(
+            in_features=self.resnet18.fc.in_features, 
+            out_features=num_classes
+        )
 
-        self.conv1 = nn.Conv2d(1, 32, 3, 1)
-        self.conv2 = nn.Conv2d(32, 64, 3, 1)
-        self.conv3 = nn.Conv2d(64, 128, 3, 1)
-        self.dropout = nn.Dropout(dropout_rate)
-        self.fc1 = nn.Linear(128, classes_num)
+    def forward(self, x):
+        return self.resnet18(x)
 
-    def forward(self, x: torch.Tensor) -> torch.Tensor:
-        """
-            Forward pass.
-        """
-        x = torch.relu(self.conv1(x))
-        x = torch.max_pool2d(x, 2, 2)
-
-        x = torch.relu(self.conv2(x))
-        x = torch.max_pool2d(x, 2, 2)
-
-        x = torch.relu(self.conv3(x))
-        x = torch.max_pool2d(x, 2, 2)
-
-        x = torch.flatten(x, 1)
-        x = self.dropout(x)
-
-        return self.fc1(x)
+def get_model():
+    model = ResNet18ForFMNIST()
+    return model.to(device)

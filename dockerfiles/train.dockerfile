@@ -14,4 +14,8 @@ COPY pyproject.toml pyproject.toml
 RUN pip install -r requirements.txt --no-cache-dir --verbose
 RUN pip install . --no-deps --no-cache-dir --verbose
 
+# Download the data first
+RUN python -u src/mlops_project/data.py
+
+# Now run the training
 ENTRYPOINT ["python", "-u", "src/mlops_project/train.py"]

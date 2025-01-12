@@ -1,126 +1,113 @@
-"""
-    Module to handle the dataset operations.
-"""
-
-from pathlib import Path
-from typing import Tuple, List, Optional
-import struct
 import os
-from PIL import Image
-import numpy as np
+import pickle
 import torch
-import typer
-from torch.utils.data import Dataset
+from torchvision import datasets, transforms
+from torch.utils.data import Dataset, DataLoader, random_split
+from pathlib import Path
+
+
+RAW_DIR = Path("../../data/raw")
+PROCESSED_DIR = Path("../../data/processed")
+os.makedirs(RAW_DIR, exist_ok=True)
+os.makedirs(PROCESSED_DIR, exist_ok=True)
+
+def download_and_preprocess():
+    print("Downloading Fashion MNIST dataset...")
+
+    transform = transforms.Compose([
+        transforms.Resize((244, 244)),
+        transforms.ToTensor(),
+        transforms.Normalize((0.5,), (0.5,))  
+    ])
+
+    # Download the training and test datasets
+    train_dataset = datasets.FashionMNIST(
+        root=RAW_DIR,
+        train=True,
+        download=True,
+        transform=transform
+    )
+
+    test_dataset = datasets.FashionMNIST(
+        root=RAW_DIR,
+        train=False,
+        download=True,
+        transform=transform
+    )
+
+    # Save raw training and test data
+    save_data(test_dataset, "test")
+    save_data(train_dataset, "train")
+
+    print(f"Data processed and saved to {PROCESSED_DIR}")
+
+
+def save_data(dataset, data_type):
+    data_path = PROCESSED_DIR / f"{data_type}_data.pkl"
+
+    images = dataset.data.numpy()
+    labels = dataset.targets.numpy()
+
+    with open(data_path, "wb") as f:
+        pickle.dump({
+            "images": images,
+            "labels": labels
+        }, f)
+
+    print(f"Saved {data_type} data to {data_path}")
 
 class FashionMNISTDataset(Dataset):
-    """
-        Fashion MNIST dataset processor.
-    """
-
-    def __init__(self, raw_data_path: Path, dataset_type: str, transform: Optional[callable] = None) -> None:
+    def __init__(self, data_path: str):
         """
-            Initialize the dataset.
-        """
-        self.data_path = raw_data_path
-        self.transform = transform
-        self.dataset_type = dataset_type
-        self.images, self.labels = [], []
+        Custom dataset class for loading Fashion MNIST data from a Pickle file.
         
-        # define file paths based on dataset type
-        if dataset_type == 'train':
-            images_path = Path(os.path.join(self.data_path, "train-images-idx3-ubyte"))
-            labels_path = Path(os.path.join(self.data_path, "train-labels-idx1-ubyte"))
-        elif dataset_type == 'test':
-            images_path = Path(os.path.join(self.data_path, "t10k-images-idx3-ubyte"))
-            labels_path = Path(os.path.join(self.data_path, "t10k-labels-idx1-ubyte"))
-        else:
-            raise ValueError("dataset_type must be either 'train' or 'test'")
-        
-        if images_path.exists() and labels_path.exists():
-            self.images, self.labels = self._read_mnist_files(images_path, labels_path)
-        else:
-            raise FileNotFoundError(f"Could not find {dataset_type} dataset files")
-
-    def _read_mnist_files(self, images_path: Path, labels_path: Path) -> Tuple[np.ndarray, List]:
+        Args:
+            data_path (str): Path to the Pickle file containing the data.
         """
-            Read the binary MNIST format files.
-        """
-        with open(images_path, 'rb') as f:
-            _, _, rows, cols = struct.unpack(">IIII", f.read(16))
-            images = np.frombuffer(f.read(), dtype=np.uint8)
-            images = images.reshape(-1, rows, cols)
-            
-        with open(labels_path, 'rb') as f:
-            _, _ = struct.unpack(">II", f.read(8))
-            labels = np.frombuffer(f.read(), dtype=np.uint8).tolist()
-            
-        return images, labels
+        with open(data_path, "rb") as f:
+            data = pickle.load(f)
 
-    def __len__(self) -> int:
-        """
-            Return the length of the dataset.
-        """
-        return len(self.images)
-
-    def __getitem__(self, index: int) -> Tuple[torch.Tensor, torch.Tensor]:
-        """
-            Return a given sample from the dataset.
-        """
-        image, label = self.images[index], self.labels[index]
-        
-        # convert image to tensor and normalize to [0,1]
-        image = torch.tensor(image, dtype=torch.float32) / 255.0
-        
-        # add channel dimension 
-        image = image.unsqueeze(0) # (H, W) -> (1, H, W)
-        label = torch.tensor(label, dtype=torch.long)
-
-        if self.transform:
-            image = self.transform(image)
-
-        return image, label
-
-    def preprocess(self, output_folder: Path) -> None:
-        """
-            Preprocess the raw data and save it to PNG images.
-        """
-        # create dataset-specific output folder
-        dataset_folder = Path(os.path.join(output_folder, self.dataset_type))
-        dataset_folder.mkdir(parents=True, exist_ok=True)
-
-        # TODO: PUT THAT IN THE CONFIG FILE
-        class_names = ['tshirt_top', 'trouser', 'pullover', 'dress', 'coat', 
-                      'sandal', 'shirt', 'sneaker', 'bag', 'ankle_boot']
-
-        # create class-specific folders
-        for class_name in class_names:
-            Path(os.path.join(dataset_folder, class_name)).mkdir(exist_ok=True)
-
-        # save each image in its class folder
-        for idx, (image, label) in enumerate(zip(self.images, self.labels)):
-            img = Image.fromarray(image)
-            class_name = class_names[label]
-            img.save(dataset_folder / class_name / f"{idx}.png")
+        self.images = torch.tensor(data["images"], dtype=torch.float32).unsqueeze(1)
+        self.labels = torch.tensor(data["labels"], dtype=torch.long)
+    
+    def __len__(self):
+        """Return the number of samples."""
+        return len(self.labels)
+    
+    def __getitem__(self, idx):
+        """Return a single sample (image, label) pair."""
+        return self.images[idx], self.labels[idx]
 
 
-def preprocess(raw_data_path: Path = Path("data/raw"), output_folder: Path = Path("data/processed")) -> Tuple[Dataset, Dataset]:
-    """
-        Main function to preprocess both training and test datasets.
-    """
-    print("Preprocessing Fashion MNIST data...")
+def load_processed_data(data_type: str):
+    data_path = PROCESSED_DIR / f"{data_type}_data.pkl"
+    
+    # Load the data
+    with open(data_path, "rb") as f:
+        data = pickle.load(f)
+    
+    return data
 
-    print("Processing training dataset...")
-    train_dataset = FashionMNISTDataset(raw_data_path, dataset_type='train')
-    train_dataset.preprocess(output_folder)
+def get_test_loader():
+    test_data = FashionMNISTDataset(PROCESSED_DIR / "test_data.pkl")
+    test_loader = DataLoader(test_data, batch_size=32, shuffle=False)
 
-    print("Processing test dataset...")
-    test_dataset = FashionMNISTDataset(raw_data_path, dataset_type='test')
-    test_dataset.preprocess(output_folder)
+    return test_loader
 
-    print("Preprocessing complete!")
+def get_train_loaders():
+    
+    train_data = FashionMNISTDataset(PROCESSED_DIR / "train_data.pkl")
+    train_size = int(0.8 * len(train_data))  # 80% for training
+    val_size = len(train_data) - train_size  # 20% for validation
+    train_subset, val_subset = random_split(train_data, [train_size, val_size])
 
-    return train_dataset, test_dataset
+   
+    train_loader = DataLoader(train_subset, batch_size=32, shuffle=True)
+    val_loader = DataLoader(val_subset, batch_size=32, shuffle=False)
 
+    return train_loader, val_loader
 
 if __name__ == "__main__":
-    typer.run(preprocess)
+    download_and_preprocess()
+
+     
