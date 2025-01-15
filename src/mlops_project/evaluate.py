@@ -3,15 +3,16 @@ from model import get_model
 import torch
 import torch.nn.functional as F
 from tqdm import tqdm  
+from omegaconf import DictConfig 
 
-test_loader = get_test_loader()
 
-def evaluate():
+
+def evaluate(config: DictConfig):
     """
     Evaluate the model on the test set.
     """
-   
-    model = get_model()
+    test_loader = get_test_loader(config.paths.processed_dir, config.data.batch_size)
+    model = get_model(config)
     model.load_state_dict(torch.load("models/model.pth"))
     model.eval()  
     

@@ -2,6 +2,7 @@ import torch
 from torch import nn
 import torchvision.models as models
 from torchvision.models import ResNet18_Weights
+from omegaconf import DictConfig 
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -9,7 +10,7 @@ class ResNet18ForFMNIST(nn.Module):
     """
     ResNet18 model adapted for Fashion MNIST.
     """
-    def __init__(self, num_classes=10):
+    def __init__(self, config: DictConfig):
         super(ResNet18ForFMNIST, self).__init__()
         
         # Load pre-trained ResNet18 with weights from ImageNet
@@ -28,12 +29,13 @@ class ResNet18ForFMNIST(nn.Module):
         # Modify the fully connected layer to match the number of classes in Fashion MNIST
         self.resnet18.fc = nn.Linear(
             in_features=self.resnet18.fc.in_features, 
-            out_features=num_classes
+            out_features=config.data.num_classes
         )
 
     def forward(self, x):
         return self.resnet18(x)
 
-def get_model():
-    model = ResNet18ForFMNIST()
+def get_model(config: DictConfig):
+    
+    model = ResNet18ForFMNIST(config)
     return model.to(device)
