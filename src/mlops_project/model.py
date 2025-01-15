@@ -8,7 +8,7 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 class ResNet18ForFMNIST(nn.Module):
     """
-    ResNet18 model adapted for Fashion MNIST.
+        ResNet18 model adapted for Fashion MNIST.
     """
     def __init__(self, config: DictConfig):
         super(ResNet18ForFMNIST, self).__init__()
