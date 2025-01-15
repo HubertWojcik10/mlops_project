@@ -19,7 +19,7 @@ optimizer:
 
 # Training Configuration
 experiment:
-  epochs: 10
+  epochs: 1
   
 data:
   name: FashionMNIST
