@@ -1,0 +1,32 @@
+defaults:
+  - _self_  
+  
+hydra:
+  run:
+    dir: .
+
+# Model Configuration
+model:
+  name: resnet18
+  save_model_name: ${hydra.job.num}
+
+
+# Optimizer Configuration
+optimizer:
+  name: adam
+  lr: 0.001
+  weight_decay: 0.0001
+
+# Training Configuration
+experiment:
+  epochs: 10
+  
+data:
+  name: FashionMNIST
+  batch_size: 64
+  num_classes : 10
+
+paths:
+  raw_dir : "../../data/raw"
+  processed_dir : "../../data/processed"
+  save_dir: models/
