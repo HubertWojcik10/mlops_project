@@ -178,3 +178,5 @@ cython_debug/
 models/
 data/processed/*
 !data/processed/*.dvc
+data/
+.hydra/
