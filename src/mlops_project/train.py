@@ -4,8 +4,8 @@ from pathlib import Path
 import typer
 import torch
 import hydra
-from omegaconf import DictConfig 
-import os 
+from omegaconf import DictConfig
+import os
 import sys
 from loguru import logger
 
@@ -30,7 +30,7 @@ def train(config: DictConfig):
     loss_fn = torch.nn.CrossEntropyLoss()
     optimizer = torch.optim.Adam(model.parameters(), lr=config.optimizer.lr)
     logger.info("Loss function and optimizer initialized")
-    
+
     current_val_loss = float('inf')
 
     with torch.profiler.profile(
@@ -70,7 +70,7 @@ def train(config: DictConfig):
                 val_loss /= len(val_loader)
                 # print(f"Epoch {epoch}, val_loss: {val_loss}")
                 logger.info(f"Epoch {epoch}, val_loss: {val_loss}")
-    
+
         # Save the model
         if current_val_loss > val_loss:
             model_path = Path(f"{config.paths.save_dir}/{config.model.save_model_name}.pth")
