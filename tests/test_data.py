@@ -28,3 +28,4 @@ def test_dataset_shape() -> None:
         for x, y in dataset:
             assert x.shape == (1, 28, 28)
             assert y in range(10)
+            
