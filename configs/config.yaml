@@ -27,6 +27,6 @@ data:
   num_classes : 10
 
 paths:
-  raw_dir : "../../data/raw"
-  processed_dir : "../../data/processed"
+  raw_dir : "./data/raw"
+  processed_dir : "./data/processed"
   save_dir: models/
