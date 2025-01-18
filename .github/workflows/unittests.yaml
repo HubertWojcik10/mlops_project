@@ -52,6 +52,11 @@ jobs:
           pip install pre-commit
           pre-commit run --all-files
 
+      - name: Check Code Style with Black
+        run: |
+          pip install black
+          black --check .
+
       - name: Set PYTHONPATH
         run: echo "PYTHONPATH=$PYTHONPATH:$(pwd)/src" >> $GITHUB_ENV
 

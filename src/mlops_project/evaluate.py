@@ -11,6 +11,7 @@ logger.remove()
 logger.add(sys.stderr, format="{time} {level} {message}", level="INFO")
 logger.add("evaluation.log", rotation="10 MB", level="INFO")
 
+
 def evaluate(config: DictConfig):
     """
     Evaluate the model on the test set.
@@ -31,11 +32,11 @@ def evaluate(config: DictConfig):
     with torch.profiler.profile(
         activities=[
             torch.profiler.ProfilerActivity.CPU,
-            torch.profiler.ProfilerActivity.CUDA
+            torch.profiler.ProfilerActivity.CUDA,
         ],
         record_shapes=True,
         profile_memory=True,
-        with_stack=True
+        with_stack=True,
     ) as prof:
         with torch.no_grad():
             for images, labels in tqdm(test_loader, desc="Evaluating", leave=False):
