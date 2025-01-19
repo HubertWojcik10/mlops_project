@@ -1,16 +1,20 @@
+import torch
+import wandb
+from pathlib import Path
 from data import get_train_loaders, download_and_preprocess
 from model import get_model
-from pathlib import Path
-import typer
-import torch
+from loguru import logger
+import sys
 import hydra
 from omegaconf import DictConfig, OmegaConf
-import wandb
+
+logger.remove()
+logger.add(sys.stderr, format="{time} {level} {message}", level="INFO")
 
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 sweep_config = {
-    'method': 'random',
+    'method': 'grid',
     'name': 'sweep',
     'metric': {
         'name': 'val_loss',
@@ -26,7 +30,7 @@ sweep_config = {
     }
 }
 
-def train(model, train_loader, val_loader, loss_fn, optimizer):
+def train(model, train_loader, val_loader, loss_fn, optimizer, epoch):
     """
     Train the model on Fashion MNIST.
     """
@@ -40,9 +44,11 @@ def train(model, train_loader, val_loader, loss_fn, optimizer):
         train_loss += loss.item()
         loss.backward()
         optimizer.step()
-    
+
         if i % 100 == 0:
             wandb.log({'iter': i, 'loss': loss.item()})
+            logger.info(f"Epoch {epoch}, iter {i}, loss: {loss.item()}")
+            logger.debug(f"Epoch {epoch}, iter {i}, loss: {loss.item()}")
 
     # Validation
     model.eval()
@@ -53,41 +59,67 @@ def train(model, train_loader, val_loader, loss_fn, optimizer):
             y_pred = model(img)
             val_loss += loss_fn(y_pred, label).item()
     val_loss /= len(val_loader)
+    logger.info(f"Epoch {epoch}, val_loss: {val_loss}")
     train_loss /= len(train_loader)
     return train_loss, val_loss
+
+def compare_models_val_loss(current_val, new_val):
+    return current_val > new_val
+
+def save_model(model, path):
+    torch.save(model.state_dict(), path)
+    logger.info(f"Model saved to {path}")
 
 def train_sweep(config: DictConfig):
     config_dict = OmegaConf.to_container(config, resolve=True)
 
-    with wandb.init(
-        project="sweep_project",
-        config=config_dict 
-    ) as run:  
+    with wandb.init(project="sweep_project", config=config_dict) as run:
+        wb_config = wandb.config
+        run_name = f"sweep_lr_{wb_config.lr}_batch_{wb_config.batch_size}"
+        run.name = run_name
+        logger.info(f"Run name: {run_name}")
+        logger.info("Training started")
         
-        wb_config = wandb.config  
-
-        run.name = f"sweep_lr_{wb_config.lr}_batch_{wb_config.batch_size}"
-
+        # Model initialization
         model = get_model(config)
         model.to(DEVICE)
-        train_loader, val_loader = get_train_loaders(config.paths.processed_dir, wb_config.batch_size)
+        logger.info("Model added to device")
+        
+        # Data loading
+        train_loader, val_loader = get_train_loaders(wb_config.paths['processed_dir'], wb_config.batch_size)
+        logger.info("Data loaders initialized")
+        
+        # Loss function and optimizer
         loss_fn = torch.nn.CrossEntropyLoss()
         optimizer = torch.optim.Adam(model.parameters(), lr=wb_config.lr)
+        logger.info("Loss function and optimizer initialized")
 
-        for epoch in range(config.experiment.epochs):
-            wandb.log({'epoch': epoch})  
-            train_loss, val_loss = train(model, train_loader, val_loader, loss_fn, optimizer)
-            wandb.log({'train_loss': train_loss, 'val_loss': val_loss})
+        # Track the best model
+        current_val_loss = float('inf')
 
+        with torch.profiler.profile(
+            activities=[torch.profiler.ProfilerActivity.CPU, torch.profiler.ProfilerActivity.CUDA],
+            record_shapes=True,
+            profile_memory=True,
+            with_stack=True
+        ) as prof:
+            for epoch in range(wb_config.experiment['epochs']):
+                wandb.log({'epoch': epoch})
+                train_loss, val_loss = train(model, train_loader, val_loader, loss_fn, optimizer, epoch)
+                wandb.log({'train_loss': train_loss, 'val_loss': val_loss})
+                
+                # Save the model if validation loss improves
+                if compare_models_val_loss(current_val_loss, val_loss):
+                    model_path = Path(f"{wb_config.paths['save_dir']}/model.pth")
+                    save_model(model, model_path)
+                    current_val_loss = val_loss
 
 @hydra.main(config_path="../../configs", config_name="config", version_base="1.1")
 def hydra_train(config: DictConfig):
     download_and_preprocess(config)
+    
     sweep_id = wandb.sweep(sweep_config, project='sweep_project')
-    wandb.agent(sweep_id, function=lambda: train_sweep(config))
-
-def main():
-    hydra_train()
+    wandb.agent(sweep_id, function=lambda: train_sweep(config), count=6)
 
 if __name__ == "__main__":
-    typer.run(main)
+    hydra_train()

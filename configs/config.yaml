@@ -7,7 +7,7 @@ hydra:
 
 # Training Configuration
 experiment:
-  epochs: 2
+  epochs: 1
   
 data:
   name: FashionMNIST
