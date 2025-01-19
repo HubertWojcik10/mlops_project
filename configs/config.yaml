@@ -7,7 +7,7 @@ hydra:
 
 # Training Configuration
 experiment:
-  epochs: 1
+  epochs: 2
   
 data:
   name: FashionMNIST
@@ -17,3 +17,4 @@ paths:
   raw_dir : "./data/raw"
   processed_dir : "./data/processed"
   save_dir: models/
+  sweep_path: configs/sweep.yaml

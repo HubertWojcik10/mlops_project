@@ -6,6 +6,7 @@ from model import get_model
 from loguru import logger
 import sys
 import hydra
+import yaml
 from omegaconf import DictConfig, OmegaConf
 
 logger.remove()
@@ -13,22 +14,6 @@ logger.add(sys.stderr, format="{time} {level} {message}", level="INFO")
 
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-sweep_config = {
-    'method': 'grid',
-    'name': 'sweep',
-    'metric': {
-        'name': 'val_loss',
-        'goal': 'minimize'
-    },
-    'parameters': {
-        'lr': {
-            'values': [0.01, 0.001, 0.0001]
-        },
-        'batch_size': {
-            'values': [32, 64]
-        }
-    }
-}
 
 def train(model, train_loader, val_loader, loss_fn, optimizer, epoch):
     """
@@ -115,11 +100,16 @@ def train_sweep(config: DictConfig):
                     current_val_loss = val_loss
 
 @hydra.main(config_path="../../configs", config_name="config", version_base="1.1")
-def hydra_train(config: DictConfig):
+def main(config: DictConfig):
+    with open(config.paths.sweep_path, "r") as file:
+        sweep_config = yaml.safe_load(file)
+
+    print(OmegaConf.to_yaml(config))  
+    print(sweep_config)              
     download_and_preprocess(config)
     
     sweep_id = wandb.sweep(sweep_config, project='sweep_project')
     wandb.agent(sweep_id, function=lambda: train_sweep(config), count=6)
 
 if __name__ == "__main__":
-    hydra_train()
+    main()
