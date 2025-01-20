@@ -12,6 +12,7 @@ experiment:
 data:
   name: FashionMNIST
   num_classes : 10
+  api_batch_size: 64
 
 paths:
   raw_dir : "./data/raw"
