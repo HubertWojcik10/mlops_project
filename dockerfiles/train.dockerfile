@@ -8,6 +8,7 @@ RUN apt update && \
 COPY requirements.txt requirements.txt
 COPY pyproject.toml pyproject.toml
 COPY src/ src/
+COPY configs/ configs/
 
 WORKDIR /
 RUN --mount=type=cache,target=/root/.cache/pip pip install -r requirements.txt
@@ -17,8 +18,7 @@ RUN dvc init --no-scm
 COPY .dvc/config .dvc/config
 COPY *.dvc .dvc/
 RUN dvc config core.no_scm true
-COPY ~/Library/Caches default.json
-RUN dvc remote modify myremote --local gdrive_service_account_json_file_path default.json
+COPY credentials.json ./credentials.json
 RUN dvc pull
 
 ENTRYPOINT ["python", "-u", "src/mlops_project/train.py"]
