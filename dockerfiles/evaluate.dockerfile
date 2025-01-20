@@ -8,6 +8,7 @@ RUN apt update && \
 COPY requirements.txt requirements.txt
 COPY pyproject.toml pyproject.toml
 COPY src/ src/
+COPY models/ models/
 
 WORKDIR /
 RUN --mount=type=cache,target=/root/.cache/pip pip install -r requirements.txt
@@ -21,4 +22,4 @@ COPY ~/Library/Caches default.json
 RUN dvc remote modify myremote --local gdrive_service_account_json_file_path default.json
 RUN dvc pull
 
-ENTRYPOINT ["python", "-u", "src/mlops_project/train.py"]
+ENTRYPOINT ["python", "-u", "src/mlops_project/evaluate.py"]
