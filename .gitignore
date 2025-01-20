@@ -180,3 +180,5 @@ data/processed/*
 !data/processed/*.dvc
 data/
 .hydra/
+
+credentials.json
