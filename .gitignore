@@ -176,12 +176,8 @@ cython_debug/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
 models/
-# Ignore data directories
-data/*
-
-# But keep .dvc files
-!data/**/*.dvc
-data/
+data/processed/*.pkl
+!data/processed/*.dvc
 .hydra/
 
 credentials.json

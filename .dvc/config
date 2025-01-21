@@ -1,5 +1,4 @@
 [core]
-    remote = remote_storage
-['remote "remote_storage"']
+    remote = myremote
+['remote "myremote"']
     url = gs://fashion_mnist_data_bucket
-    version_aware = true
