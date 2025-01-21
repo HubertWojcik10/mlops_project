@@ -12,6 +12,7 @@ from torch.utils.data import RandomSampler
 from torchvision import transforms
 from torch import nn
 from typing import Dict
+import os
 
 CONFIG_PATH = "./configs/config.yaml"
 tags_metadata = [
@@ -36,8 +37,11 @@ def load_model(config: DictConfig, path: str) -> nn.Module:
         Load the resnet-18 model.
     """
     model = ResNet18ForFMNIST(config=config)
+    if os.path.exists(path):
+        model.load_state_dict(torch.load(path))
+    else:
+        print("Running on an empty model.")
 
-    model.load_state_dict(torch.load(path))
     model.eval()
     return model
 
