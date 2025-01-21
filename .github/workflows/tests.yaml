@@ -44,6 +44,7 @@ jobs:
           DVC_REMOTE_URL: ${{ secrets.DVC_REMOTE_URL }}
           GOOGLE_APPLICATION_CREDENTIALS: "gcp-key.json"
         run: |
+          dvc remote remove myremote || true
           dvc remote add -d myremote $DVC_REMOTE_URL
           dvc status  # This will show what files need to be pulled
           dvc pull -v  # Added -v for verbose output
