@@ -1,7 +1,5 @@
 [core]
     remote = remote_storage
-['remote "storage"']
-    url = gdrive://1RHd3UwthbtvJkQOmfIof1kNvMbg-CTG6
 ['remote "remote_storage"']
     url = gs://fashion_mnist_data_bucket
     version_aware = true
