@@ -39,12 +39,15 @@ jobs:
           echo "$GCP_SERVICE_ACCOUNT_KEY" > gcp-key.json
           export GOOGLE_APPLICATION_CREDENTIALS="gcp-key.json"
 
-      - name: Configure DVC remote
+      - name: Configure DVC remote and pull data
         env:
           DVC_REMOTE_URL: ${{ secrets.DVC_REMOTE_URL }}
+          GOOGLE_APPLICATION_CREDENTIALS: "gcp-key.json"
         run: |
           dvc remote add -d myremote $DVC_REMOTE_URL
-          dvc pull
+          dvc status  # This will show what files need to be pulled
+          dvc pull -v  # Added -v for verbose output
+          ls -la data/processed/  # Check if files are actually there
 
       - name: Install dependencies
         run: |
