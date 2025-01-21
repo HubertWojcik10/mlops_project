@@ -9,19 +9,19 @@ from omegaconf import DictConfig
 
 def download_and_preprocess(config: DictConfig):
     print("Downloading Fashion MNIST dataset...")
-    
+
     raw_dir = Path(config.paths.raw_dir)
     processed_dir = Path(config.paths.processed_dir)
 
     # Create directories if they don't exist
     os.makedirs(raw_dir, exist_ok=True)
     os.makedirs(processed_dir, exist_ok=True)
-    
+
     # Define dataset transformation
     transform = transforms.Compose([
         transforms.Resize((244, 244)),
         transforms.ToTensor(),
-        transforms.Normalize((0.5,), (0.5,))  
+        transforms.Normalize((0.5,), (0.5,))
     ])
 
     # Download the training and test datasets
@@ -98,5 +98,3 @@ def get_train_loaders(processed_dir: str, batch_size: int) -> DataLoader:
     val_loader = DataLoader(val_subset, batch_size=batch_size, shuffle=False)
 
     return train_loader, val_loader
-
-

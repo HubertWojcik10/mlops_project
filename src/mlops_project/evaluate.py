@@ -2,8 +2,8 @@ from data import get_test_loader
 from model import get_model
 import torch
 import torch.nn.functional as F
-from tqdm import tqdm  
-from omegaconf import DictConfig 
+from tqdm import tqdm
+from omegaconf import DictConfig
 import sys
 from loguru import logger
 
@@ -19,10 +19,10 @@ def evaluate(config: DictConfig):
     test_loader = get_test_loader(config.paths.processed_dir, config.data.batch_size)
     model = get_model(config)
     model.load_state_dict(torch.load("models/model.pth"))
-    model.eval()  
-    
+    model.eval()
+
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    model.to(device) 
+    model.to(device)
 
     correct = 0
     total = 0
@@ -54,10 +54,10 @@ def evaluate(config: DictConfig):
 
     # Calculate average loss
     average_loss = test_loss / len(test_loader)
-    
+
     # Calculate accuracy
     accuracy = 100 * correct / total
-    
+
     # print(f"Test Loss: {average_loss:.4f}")
     # print(f"Test Accuracy: {accuracy:.2f}%")
 

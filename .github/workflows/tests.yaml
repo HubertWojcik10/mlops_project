@@ -31,14 +31,14 @@ jobs:
       - name: Set up DVC
         run: |
           pip install dvc[gs]  # Install DVC with Google Cloud support
-            
+
       - name: Configure GCP credentials
         env:
           GCP_SERVICE_ACCOUNT_KEY: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
         run: |
           echo "$GCP_SERVICE_ACCOUNT_KEY" > gcp-key.json
           export GOOGLE_APPLICATION_CREDENTIALS="gcp-key.json"
-        
+
       - name: Configure DVC remote
         env:
           DVC_REMOTE_URL: ${{ secrets.DVC_REMOTE_URL }}

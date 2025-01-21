@@ -57,7 +57,7 @@ transform = transforms.Compose([
 
 @app.get("/")
 def root() -> Dict[str, str]:
-    """ 
+    """
         Homepage & Health check.
     """
     response = {
@@ -150,7 +150,7 @@ async def predict_upload(file: UploadFile = File(...), model_path: str = "./mode
         image = Image.open(io.BytesIO(contents))
     except HTTPException as exc:
         raise HTTPException(status_code=400, detail="Invalid image file") from exc
-    except (IOError, OSError) as exc:  
+    except (IOError, OSError) as exc:
         raise HTTPException(status_code=400, detail="Invalid image file") from exc
 
     try:
