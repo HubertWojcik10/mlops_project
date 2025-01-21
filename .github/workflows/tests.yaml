@@ -37,7 +37,12 @@ jobs:
           GCP_SERVICE_ACCOUNT_KEY: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
         run: |
           echo "$GCP_SERVICE_ACCOUNT_KEY" > gcp-key.json
-          export GOOGLE_APPLICATION_CREDENTIALS="gcp-key.json"
+          if [ "$RUNNER_OS" == "Windows" ]; then
+            echo "GOOGLE_APPLICATION_CREDENTIALS=gcp-key.json" >> $GITHUB_ENV
+          else
+            export GOOGLE_APPLICATION_CREDENTIALS="gcp-key.json"
+          fi
+        shell: bash
 
       - name: Configure DVC remote and pull data
         env:
