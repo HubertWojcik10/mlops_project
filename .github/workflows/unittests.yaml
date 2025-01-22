@@ -29,13 +29,6 @@ jobs:
           cache: 'pip'
           cache-dependency-path: requirements.txt
 
-      - name: Install dependencies
-        run: |
-          python -m pip install -U pip setuptools wheel
-          pip install -r requirements.txt -r requirements_dev.txt
-          pip install dvc
-          pip list
-
       - name: Set up DVC
         run: |
           pip install dvc[gs]  # Install DVC with Google Cloud support
@@ -62,6 +55,13 @@ jobs:
           dvc status  # This will show what files need to be pulled
           dvc pull -v  # Added -v for verbose output
           ls -la data/processed/  # Check if files are actually there
+
+      - name: Install dependencies
+        run: |
+          python -m pip install -U pip setuptools wheel
+          pip install -r requirements.txt -r requirements_dev.txt
+          pip install dvc
+          pip list
 
       - name: Run Pre-Commit
         run: |
