@@ -77,7 +77,7 @@ jobs:
 
       - name: Run tests & coverage
         run: |
-          coverage run -m pytest tests/ --junitxml=pytest-report.xml
+          coverage run --source=src -m pytest tests/ --junitxml=pytest-report.xml
           coverage report -m
           coverage xml
 
