@@ -10,7 +10,7 @@ repos:
       - id: check-added-large-files
 
   - repo: https://github.com/psf/black
-    rev: 23.9.1  # Replace with the latest version of Black
+    rev: 23.9.1
     hooks:
       - id: black
-        language_version: python3 #python3.11  # Replace with your Python version
+        language_version: python3
