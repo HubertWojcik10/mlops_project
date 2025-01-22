@@ -435,7 +435,9 @@ An example of a triggered workflow can be seen *here: <[weblink](https://github.
 >
 > Answer:
 
---- question 20 fill here --- Keerthi
+---
+[GCP Artifact Registry containing docker image](figures/registry.png) 
+--- Keerthi
 
 ### Question 21
 
@@ -444,7 +446,9 @@ An example of a triggered workflow can be seen *here: <[weblink](https://github.
 >
 > Answer:
 
---- question 21 fill here --- Keerthi
+--- 
+[GCP Build History](figures/build.png)
+--- Keerthi
 
 ### Question 22
 
