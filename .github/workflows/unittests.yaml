@@ -100,12 +100,12 @@ jobs:
 
       - name: Set PYTHONPATH
         run: |
-          if ($env:RUNNER_OS -eq "Windows") {
-            echo "PYTHONPATH=$env:PYTHONPATH;$(pwd)/src" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
-          } else {
+          if [[ "$RUNNER_OS" == "Windows" ]]; then
+            echo "PYTHONPATH=$env:PYTHONPATH;$(pwd)/src" >> $env:GITHUB_ENV
+          else
             echo "PYTHONPATH=$PYTHONPATH:$(pwd)/src" >> $GITHUB_ENV
-          }
-        shell: pwsh
+          fi
+        shell: bash
 
       - name: Run tests & coverage
         run: |
