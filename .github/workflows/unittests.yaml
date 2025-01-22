@@ -44,13 +44,6 @@ jobs:
           fi
         shell: bash
 
-      #   run: |
-      #     dvc remote remove myremote || true
-      #     dvc remote add -d myremote $DVC_REMOTE_URL
-      #     dvc status  # This will show what files need to be pulled
-      #     dvc pull -v  # Added -v for verbose output
-      #     ls -la data/processed/  # Check if files are actually there
-
       - name: Configure DVC remote and pull data
         env:
           DVC_REMOTE_URL: ${{ secrets.DVC_REMOTE_URL }}
@@ -75,11 +68,6 @@ jobs:
           pip install -r requirements.txt -r requirements_dev.txt
           pip list
 
-      # - name: Run Pre-Commit
-      #   run: |
-      #     pip install pre-commit
-      #     pre-commit run --all-files
-
       - name: Run Pre-Commit
         env:
           PRE_COMMIT_HOME: ${{ runner.temp }}/pre-commit-cache
@@ -93,9 +81,6 @@ jobs:
         run: |
           pip install black
           black --check .
-
-      # - name: Set PYTHONPATH
-      #   run: echo "PYTHONPATH=$PYTHONPATH:$(pwd)/src" >> $GITHUB_ENV
 
       - name: Set PYTHONPATH
         run: |
