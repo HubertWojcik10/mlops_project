@@ -163,7 +163,15 @@ We used the third-party framework Black in our project. Black is an automatic co
 >
 > Answer:
 
---- question 4 fill here ---
+We used pip freeze and poetry to manage dependencies in our projects. We created two separate files: requirements.txt for production dependencies and requirements_dev.txt for development tools.
+Each team member worked in theier own virtua environment during development. To replicaate the environment, a new team member would need to create a virtual environment using the following commands:
+```python -m venv venv```
+source venv/bin/activate  # For Linux/Mac  
+venv\Scripts\activate     # For Windows
+Then, they would install the dependencies using:
+pip install -r requirements.txt  
+pip install -r requirements_dev.txt  
+The project training is run on Google Vertex AI, which automatically create a new environment for each training job. This ensures that the environment is clean and consistent for the model training.
 
 ### Question 5
 
