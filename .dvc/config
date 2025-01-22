@@ -1,4 +1,4 @@
 [core]
-    remote = storage
-['remote "storage"']
-    url = gdrive://1RHd3UwthbtvJkQOmfIof1kNvMbg-CTG6
+    remote = myremote
+['remote "myremote"']
+    url = gs://fashion_mnist_data_bucket
