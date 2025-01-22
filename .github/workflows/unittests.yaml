@@ -1,0 +1,115 @@
+name: Unit Tests
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: ["ubuntu-latest", "windows-latest", "macos-latest"]
+        python-version: ["3.12", "3.11"]
+      fail-fast: true
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: 'pip'
+          cache-dependency-path: requirements.txt
+
+      - name: Set up DVC
+        run: |
+          pip install dvc[gs]  # Install DVC with Google Cloud support
+
+      - name: Configure GCP credentials
+        env:
+          GCP_SERVICE_ACCOUNT_KEY: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
+        run: |
+          echo "$GCP_SERVICE_ACCOUNT_KEY" > gcp-key.json
+          if [ "$RUNNER_OS" == "Windows" ]; then
+            echo "GOOGLE_APPLICATION_CREDENTIALS=gcp-key.json" >> $GITHUB_ENV
+          else
+            export GOOGLE_APPLICATION_CREDENTIALS="gcp-key.json"
+          fi
+        shell: bash
+
+      - name: Configure DVC remote and pull data
+        env:
+          DVC_REMOTE_URL: ${{ secrets.DVC_REMOTE_URL }}
+          GOOGLE_APPLICATION_CREDENTIALS: "gcp-key.json"
+        run: |
+          if dvc remote list | grep -q myremote; then
+            dvc remote remove myremote
+          fi
+          dvc remote add -d myremote $DVC_REMOTE_URL
+          dvc status  # Show what files need to be pulled
+          dvc pull -v  # Verbose output for pull
+          if [ "$RUNNER_OS" == "Windows" ]; then
+            dir "data\processed\\"  # Windows directory listing
+          else
+            ls -la data/processed/  # Unix directory listing
+          fi
+        shell: bash
+
+      - name: Install dependencies
+        run: |
+          python -m pip install -U pip setuptools wheel
+          pip install -r requirements.txt -r requirements_dev.txt
+          pip list
+
+      - name: Run Pre-Commit
+        env:
+          PRE_COMMIT_HOME: ${{ runner.temp }}/pre-commit-cache
+        run: |
+          pip install pre-commit
+          pre-commit clean
+          pre-commit install --install-hooks
+          pre-commit run --all-files
+
+      - name: Check Code Style with Black
+        run: |
+          pip install black
+          black --check .
+
+      - name: Set PYTHONPATH
+        run: |
+          if [[ "$RUNNER_OS" == "Windows" ]]; then
+            echo "PYTHONPATH=$env:PYTHONPATH;$(pwd)/src" >> $env:GITHUB_ENV
+          else
+            echo "PYTHONPATH=$PYTHONPATH:$(pwd)/src" >> $GITHUB_ENV
+          fi
+        shell: bash
+
+      - name: Run tests & coverage
+        run: |
+          coverage run --source=src -m pytest tests/ --junitxml=pytest-report.xml
+          coverage report -m
+          coverage xml
+
+      - name: Upload Coverage Report
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage-report
+          path: coverage*.xml
+
+      - name: Upload Test Results
+        uses: actions/upload-artifact@v3
+        with:
+          name: pytest-report
+          path: pytest-report.xml
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
