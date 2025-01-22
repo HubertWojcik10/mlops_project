@@ -363,7 +363,12 @@ An example of a triggered workflow can be seen *here: <[weblink](https://github.
 >
 > Answer:
 
---- question 15 fill here --- Keerthi
+---
+> For our project, we developed two images - one for training and one for deployment. The training dockerfile enables us to use VertexAI to train a model on a VM, and the deployment dockerfile allows us to host our model and make predictions from it along with other functionality.
+>
+> * To generate a training docker image, run the following command from the root, `docker run -f dockerfiles/train.dockerfile . -t train:latest´ **(LINK TO DOCKERFILE)**
+> * To genereate a docker image for deployment, run the following command from the root, `docker run -f dockerfiles/api.dockerfile . -t api:latest´ **(LINK TO DOCKERFILE)**
+--- Keerthi
 
 ### Question 16
 
@@ -399,7 +404,7 @@ An example of a triggered workflow can be seen *here: <[weblink](https://github.
 
 ### Question 18
 
-> **The backbone of GCP is the Compute engine. Explained how you made use of this service and what type of VMs**
+> **The backbone of GCP is the Compute engine. Explain how you made use of this service and what type of VMs**
 > **you used?**
 >
 > Recommended answer length: 100-200 words.
@@ -410,7 +415,9 @@ An example of a triggered workflow can be seen *here: <[weblink](https://github.
 >
 > Answer:
 
---- question 18 fill here --- Keerthi
+--- 
+**We unfortunately did not use the Compute Engine services for this project. We used Vertex AI for training as answered in Question 22.**
+--- Keerthi
 
 ### Question 19
 
@@ -452,7 +459,9 @@ An example of a triggered workflow can be seen *here: <[weblink](https://github.
 >
 > Answer:
 
---- question 22 fill here --- Keerthi
+--- 
+Even though the Compute Engine API has the ability to create and run VMs, the risk of being responsible to close the VMs manually and otherwise being charged led us to use Vertex AI. Vertex AI provided us the functionality of starting a VM, running a docker image, and then closing the VM once the task was done. Due to its simplicity and easy interface, we chose Vertex AI over Compute Engine. Provided that we already ran cloudbuild.yaml and have a docker image of the training environment in the Artifact Registry, we then run vertex_ai_train.yaml which uses config_cpu.yaml to refer to this docker image while incorporating Secrets Management in GCP to use the WANDB_API_KEY without us having to store it locally!
+--- Keerthi
 
 ## Deployment
 
@@ -534,7 +543,9 @@ An example of a triggered workflow can be seen *here: <[weblink](https://github.
 >
 > Answer:
 
---- question 27 fill here --- Keerthi
+--- 
+We were surprised to see that we used only a dollar of credits! The most expensive service was **hubert i need help here because i cant access the cost**
+--- Keerthi
 
 ### Question 28
 
@@ -581,7 +592,7 @@ An example of a triggered workflow can be seen *here: <[weblink](https://github.
 >
 > Answer:
 
---- question 30 fill here --- Keerthi
+--- Overall, we felt a little overwhelemed by the interdependecy of multiple frameworks and files, mainly, when building docker images and running them as we tried to incorporate the WANDB_API_KEY, granting access to pull data from DVC, and submitting training jobs, within multiple config files. To overcome these challenges, we met and worked on it together in person which helped us understand some crucial parts we were missing with the help of the lecture material. **FEEL FREE TO ADD MORE OR REMOVE SOMETHING!!** --- Keerthi
 
 ### Question 31
 
