@@ -95,8 +95,17 @@ jobs:
           pip install black
           black --check .
 
+      # - name: Set PYTHONPATH
+      #   run: echo "PYTHONPATH=$PYTHONPATH:$(pwd)/src" >> $GITHUB_ENV
+
       - name: Set PYTHONPATH
-        run: echo "PYTHONPATH=$PYTHONPATH:$(pwd)/src" >> $GITHUB_ENV
+        run: |
+          if ($env:RUNNER_OS -eq "Windows") {
+            echo "PYTHONPATH=$env:PYTHONPATH;$(pwd)/src" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+          } else {
+            echo "PYTHONPATH=$PYTHONPATH:$(pwd)/src" >> $GITHUB_ENV
+          }
+        shell: pwsh
 
       - name: Run tests & coverage
         run: |
