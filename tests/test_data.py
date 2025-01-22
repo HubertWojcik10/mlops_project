@@ -1,5 +1,7 @@
 from torch.utils.data import Dataset
+
 from src.mlops_project.data import FashionMNISTDataset
+
 
 train_dataset = FashionMNISTDataset("data/processed/train_data.pkl")
 test_dataset = FashionMNISTDataset("data/processed/test_data.pkl")
