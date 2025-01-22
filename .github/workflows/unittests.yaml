@@ -64,7 +64,7 @@ jobs:
           dvc status  # Show what files need to be pulled
           dvc pull -v  # Verbose output for pull
           if [ "$RUNNER_OS" == "Windows" ]; then
-            dir data\processed\  # Windows directory listing
+            dir "data\processed\\"  # Windows directory listing
           else
             ls -la data/processed/  # Unix directory listing
           fi
