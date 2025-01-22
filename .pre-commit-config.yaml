@@ -13,4 +13,4 @@ repos:
     rev: 23.9.1  # Replace with the latest version of Black
     hooks:
       - id: black
-        language_version: python3.11  # Replace with your Python version
+        language_version: python3 #python3.11  # Replace with your Python version

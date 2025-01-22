@@ -86,8 +86,8 @@ jobs:
           PRE_COMMIT_HOME: ${{ runner.temp }}/pre-commit-cache
         run: |
           pip install pre-commit
-          pre-commit clean  # Clear any existing cache
-          pre-commit install --install-hooks  # Install hooks explicitly
+          pre-commit clean
+          pre-commit install --install-hooks
           pre-commit run --all-files
 
       - name: Check Code Style with Black
