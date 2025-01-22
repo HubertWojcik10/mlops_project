@@ -36,16 +36,32 @@ jobs:
           pip install dvc
           pip list
 
-      # - name: Set up DVC remote
-      #   run: |
-      #     dvc remote add -d myremote <remote-url>  # Replace <remote-url> with the URL of your DVC remote
-      #     dvc remote modify myremote --local auth basic  # Set authentication method (you can change this based on your remote's method)
-      #     dvc remote modify myremote --local user ${{ secrets.DVC_USER }}  # Use GitHub secrets for user credentials
-      #     dvc remote modify myremote --local password ${{ secrets.DVC_PASSWORD }}  # Use GitHub secrets for password
+      - name: Set up DVC
+        run: |
+          pip install dvc[gs]  # Install DVC with Google Cloud support
 
-      # - name: Pull DVC data
-      #   run: |
-      #     dvc pull train_data.pkl, test_data.pkl
+      - name: Configure GCP credentials
+        env:
+          GCP_SERVICE_ACCOUNT_KEY: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
+        run: |
+          echo "$GCP_SERVICE_ACCOUNT_KEY" > gcp-key.json
+          if [ "$RUNNER_OS" == "Windows" ]; then
+            echo "GOOGLE_APPLICATION_CREDENTIALS=gcp-key.json" >> $GITHUB_ENV
+          else
+            export GOOGLE_APPLICATION_CREDENTIALS="gcp-key.json"
+          fi
+        shell: bash
+
+      - name: Configure DVC remote and pull data
+        env:
+          DVC_REMOTE_URL: ${{ secrets.DVC_REMOTE_URL }}
+          GOOGLE_APPLICATION_CREDENTIALS: "gcp-key.json"
+        run: |
+          dvc remote remove myremote || true
+          dvc remote add -d myremote $DVC_REMOTE_URL
+          dvc status  # This will show what files need to be pulled
+          dvc pull -v  # Added -v for verbose output
+          ls -la data/processed/  # Check if files are actually there
 
       - name: Run Pre-Commit
         run: |
