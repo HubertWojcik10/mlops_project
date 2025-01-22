@@ -45,16 +45,30 @@ jobs:
           fi
         shell: bash
 
+      #   run: |
+      #     dvc remote remove myremote || true
+      #     dvc remote add -d myremote $DVC_REMOTE_URL
+      #     dvc status  # This will show what files need to be pulled
+      #     dvc pull -v  # Added -v for verbose output
+      #     ls -la data/processed/  # Check if files are actually there
+
       - name: Configure DVC remote and pull data
         env:
           DVC_REMOTE_URL: ${{ secrets.DVC_REMOTE_URL }}
           GOOGLE_APPLICATION_CREDENTIALS: "gcp-key.json"
         run: |
-          dvc remote remove myremote || true
+          if dvc remote list | grep -q myremote; then
+            dvc remote remove myremote
+          fi
           dvc remote add -d myremote $DVC_REMOTE_URL
-          dvc status  # This will show what files need to be pulled
-          dvc pull -v  # Added -v for verbose output
-          ls -la data/processed/  # Check if files are actually there
+          dvc status  # Show what files need to be pulled
+          dvc pull -v  # Verbose output for pull
+          if [ "$RUNNER_OS" == "Windows" ]; then
+            dir data\processed\  # Windows directory listing
+          else
+            ls -la data/processed/  # Unix directory listing
+          fi
+        shell: bash
 
       - name: Install dependencies
         run: |
