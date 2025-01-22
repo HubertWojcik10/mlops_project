@@ -191,14 +191,14 @@ The project training is run on Google Vertex AI, which automatically create a ne
 >
 > Answer:
 
---- question 5 fill here ---
+--- question 5 fill here --- German
 
 ### Question 6
 
 > **Did you implement any rules for code quality and format? What about typing and documentation? Additionally,**
 > **explain with your own words why these concepts matters in larger projects.**
 >
-> Recommended answer length: 100-200 words.
+> Recommended answer length: 100-200 words. Hubert
 >
 > Example:
 > *We used ... for linting and ... for formatting. We also used ... for typing and ... for documentation. These*
@@ -217,7 +217,7 @@ The project training is run on Google Vertex AI, which automatically create a ne
 
 > **How many tests did you implement and what are they testing in your code?**
 >
-> Recommended answer length: 50-100 words.
+> Recommended answer length: 50-100 words. 
 >
 > Example:
 > *In total we have implemented X tests. Primarily we are testing ... and ... as these the most critical parts of our*
@@ -225,7 +225,7 @@ The project training is run on Google Vertex AI, which automatically create a ne
 >
 > Answer:
 
---- question 7 fill here ---
+--- question 7 fill here --- Hubert
 
 ### Question 8
 
@@ -240,7 +240,9 @@ The project training is run on Google Vertex AI, which automatically create a ne
 >
 > Answer:
 
---- question 8 fill here ---
+[our code coverage is 12.87 but there are many not covered parts, so we need an explanation why] Hubert
+
+Achievieng 100% code coverage would not guarantee the code is error-free. Code coverage measures which lines of code are executed by tests, but it doesn not assess the quality of the tests temselves. So, for example, even a 100% code coverage rate could miss edge cases or, once in production, fail due to external dependencies. High coverage is a good indicator of thorough testing, but true reliability requires a combination of high-quality and meaningful tests.
 
 ### Question 9
 
@@ -270,7 +272,7 @@ We have used both branches and pull requests (PRs) in our project. Each team mem
 >
 > Answer:
 
---- question 10 fill here ---
+We did use DVC in our project for managing data. Instead of uploading the data directly to GitHub, we stored the training and testing datasets as `train_data.pkl` and `test_data.pkl`. Using DVC helps decouple the data from the code, ensuring that our project remain lightweight and scalable. If we hadn't used DVC, managing multiple versions of the processed data and syncronizing the changes  
 
 ### Question 11
 
@@ -307,14 +309,14 @@ An example of a triggered workflow can be seen *here: <[weblink](https://github.
 > **How did you configure experiments? Did you make use of config files? Explain with coding examples of how you would**
 > **run a experiment.**
 >
-> Recommended answer length: 50-100 words.
+> Recommended answer length: 50-100 words. 
 >
 > Example:
 > *We used a simple argparser, that worked in the following way: Python  my_script.py --lr 1e-3 --batch_size 25*
 >
 > Answer:
 
---- question 12 fill here ---
+--- question 12 fill here --- German
 
 ### Question 13
 
@@ -329,7 +331,7 @@ An example of a triggered workflow can be seen *here: <[weblink](https://github.
 >
 > Answer:
 
---- question 13 fill here ---
+--- question 13 fill here --- German
 
 ### Question 14
 
@@ -346,7 +348,7 @@ An example of a triggered workflow can be seen *here: <[weblink](https://github.
 >
 > Answer:
 
---- question 14 fill here ---
+--- question 14 fill here --- German
 
 ### Question 15
 
@@ -361,7 +363,7 @@ An example of a triggered workflow can be seen *here: <[weblink](https://github.
 >
 > Answer:
 
---- question 15 fill here ---
+--- question 15 fill here --- Keerthi
 
 ### Question 16
 
@@ -376,7 +378,7 @@ An example of a triggered workflow can be seen *here: <[weblink](https://github.
 >
 > Answer:
 
---- question 16 fill here ---
+--- question 16 fill here --- Katarina
 
 ## Working in the cloud
 
@@ -393,7 +395,7 @@ An example of a triggered workflow can be seen *here: <[weblink](https://github.
 >
 > Answer:
 
---- question 17 fill here ---
+--- question 17 fill here --- Hubert
 
 ### Question 18
 
@@ -408,7 +410,7 @@ An example of a triggered workflow can be seen *here: <[weblink](https://github.
 >
 > Answer:
 
---- question 18 fill here ---
+--- question 18 fill here --- Keerthi
 
 ### Question 19
 
@@ -417,7 +419,7 @@ An example of a triggered workflow can be seen *here: <[weblink](https://github.
 >
 > Answer:
 
---- question 19 fill here ---
+--- question 19 fill here --- Hubert
 
 ### Question 20
 
@@ -426,7 +428,7 @@ An example of a triggered workflow can be seen *here: <[weblink](https://github.
 >
 > Answer:
 
---- question 20 fill here ---
+--- question 20 fill here --- Keerthi
 
 ### Question 21
 
@@ -435,7 +437,7 @@ An example of a triggered workflow can be seen *here: <[weblink](https://github.
 >
 > Answer:
 
---- question 21 fill here ---
+--- question 21 fill here --- Keerthi
 
 ### Question 22
 
@@ -450,7 +452,7 @@ An example of a triggered workflow can be seen *here: <[weblink](https://github.
 >
 > Answer:
 
---- question 22 fill here ---
+--- question 22 fill here --- Keerthi
 
 ## Deployment
 
@@ -467,7 +469,7 @@ An example of a triggered workflow can be seen *here: <[weblink](https://github.
 >
 > Answer:
 
---- question 23 fill here ---
+--- question 23 fill here --- Hubert
 
 ### Question 24
 
@@ -483,7 +485,7 @@ An example of a triggered workflow can be seen *here: <[weblink](https://github.
 >
 > Answer:
 
---- question 24 fill here ---
+--- question 24 fill here --- Katarina
 
 ### Question 25
 
@@ -498,7 +500,7 @@ An example of a triggered workflow can be seen *here: <[weblink](https://github.
 >
 > Answer:
 
---- question 25 fill here ---
+--- question 25 fill here --- Hubert
 
 ### Question 26
 
@@ -513,7 +515,7 @@ An example of a triggered workflow can be seen *here: <[weblink](https://github.
 >
 > Answer:
 
---- question 26 fill here ---
+--- question 26 fill here --- Katarina
 
 ## Overall discussion of project
 
@@ -532,7 +534,7 @@ An example of a triggered workflow can be seen *here: <[weblink](https://github.
 >
 > Answer:
 
---- question 27 fill here ---
+--- question 27 fill here --- Keerthi
 
 ### Question 28
 
@@ -548,7 +550,7 @@ An example of a triggered workflow can be seen *here: <[weblink](https://github.
 >
 > Answer:
 
---- question 28 fill here ---
+--- question 28 fill here --- Hubert
 
 ### Question 29
 
@@ -565,7 +567,7 @@ An example of a triggered workflow can be seen *here: <[weblink](https://github.
 >
 > Answer:
 
---- question 29 fill here ---
+--- question 29 fill here --- Katarina and Keerthi
 
 ### Question 30
 
@@ -579,7 +581,7 @@ An example of a triggered workflow can be seen *here: <[weblink](https://github.
 >
 > Answer:
 
---- question 30 fill here ---
+--- question 30 fill here --- Keerthi
 
 ### Question 31
 
@@ -597,4 +599,9 @@ An example of a triggered workflow can be seen *here: <[weblink](https://github.
 > *We have used ChatGPT to help debug our code. Additionally, we used GitHub Copilot to help write some of our code.*
 > Answer:
 
---- question 31 fill here ---
+* s243906: Logging, Profiling, Pre-commit, CI/CD
+* s243933: Docker, Deployment, Coding Practices, GCP
+* s243660: Sweep, Weight and Biases, Model Building, Hydra
+* s243896: Cookiecutter, API, Unit Tests, DVC, Deployment
+
+--- question 31 fill here --- Katarina
