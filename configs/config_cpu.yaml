@@ -4,4 +4,4 @@ workerPoolSpecs:
         machineType: n1-highmem-2
     replicaCount: 1
     containerSpec:
-        imageUri: gcr.io/fashion-mnist-448314/train
+        imageUri: europe-west10-docker.pkg.dev/fashion-mnist-448314/docker-registry/train

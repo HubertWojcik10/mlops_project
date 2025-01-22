@@ -171,3 +171,4 @@ wcwidth==0.2.13
 win32_setctime==1.2.0
 yarl==1.18.3
 zc.lockfile==3.0.post1
+wandb==0.19.2

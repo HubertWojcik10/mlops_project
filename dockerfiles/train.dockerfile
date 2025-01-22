@@ -9,6 +9,7 @@ COPY requirements.txt requirements.txt
 COPY pyproject.toml pyproject.toml
 COPY src/ src/
 COPY configs/ configs/
+COPY data/ data/
 
 WORKDIR /
 RUN pip install -r requirements.txt
