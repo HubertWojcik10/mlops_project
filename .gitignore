@@ -180,4 +180,3 @@ data/processed/*.pkl
 !data/processed/*.dvc
 .hydra/
 
-credentials.json
