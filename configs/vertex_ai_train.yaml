@@ -31,13 +31,10 @@ steps:
     '--display-name',
     'example-mlops-job',
     '--config',
-    '${_VERTEX_TRAIN_CONFIG}',
-    '--env',
-    'WANDB_API_KEY=${_WANDB_API_KEY}'
+    '${_VERTEX_TRAIN_CONFIG}'
   ]
 substitutions:
   _VERTEX_TRAIN_CONFIG: 'configs/config_cpu.yaml'
-  _WANDB_API_KEY: 'WANDB_API_KEY'
 availableSecrets:
   secretManager:
   - versionName: projects/fashion-mnist-448314/secrets/WANDB_API_KEY/versions/latest
