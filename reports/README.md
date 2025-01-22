@@ -118,7 +118,7 @@ will check the repositories and the code to verify your answers.
 >
 > Answer:
 
---- question 1 fill here ---
+MLOPS 15
 
 ### Question 2
 > **Enter the study number for each member in the group**
@@ -129,7 +129,7 @@ will check the repositories and the code to verify your answers.
 >
 > Answer:
 
---- question 2 fill here ---
+s243906, s243933, s243660, s243896
 
 ### Question 3
 > **A requirement to the project is that you include a third-party package not covered in the course. What framework**
@@ -143,7 +143,7 @@ will check the repositories and the code to verify your answers.
 >
 > Answer:
 
---- question 3 fill here ---
+We used the third-party framework Black in our project. Black is an automatic code formatter that ensures a consisten code style by reformatting Python code according to the PEP 8 standards. We used the functionlity of Black's pre-commit hook to integrate it into our continuous integration workflow. This allowed us to automatically check the formatting of our code with each commit made, ensuring that all code maintains the same style without any manual intervention. The pre-commit integration helped us maintain clean and readable code throughout the project, improving both collaboration and code quality.
 
 ## Coding environment
 
@@ -243,7 +243,7 @@ will check the repositories and the code to verify your answers.
 >
 > Answer:
 
---- question 9 fill here ---
+We have used both branches and pull requests (PRs) in our project. Each team member created their own branch to work on a specific tasks on the project checklist. This allowed us to work in parallel without interfering with each other's work. Once a task was completed, a pull request was submitted to merge the branch into the main branch. Other team members reviewed the pull request before it was approved and merged to main. After merging, the branch was deleted to keep the repository clean. Using this workflow helped us manage changes efficiently, avoid conflicts, and maintain a stable main branch. It also helped our collaboration because only reviewed and tested code made it to the main.
 
 ### Question 10
 
@@ -275,7 +275,15 @@ will check the repositories and the code to verify your answers.
 >
 > Answer:
 
---- question 11 fill here ---
+We have organized our continuous integration (CI) setup using GitHub Actions, focusing on unit testing, automated formatting, and coverage. The CI pipeline tests our code across multiple operating systems (Ubuntu, macOS, and Windows) and Python versions (3.11 and 3.12). The CI workflow consists of the following components:
+* We use pytest for running unit tests to ensure that the code functions as expected.
+* Black is used for consistent code formatting, ensuring the code follows the style guide automatically.
+* We use pre-commit hooks to run checks on code quality, including linting and formatting, before code is committed.
+* We use coverage.py to measure code coverage during testing. The final report is generated and uploaded as an artifact, and also, uploaded to Codecov. 
+*  We utilize caching for dependencies to speed up the workflow and reduce the time required for subsequent builds.
+* Data version contron (DVC) is used to manage data dependencies and pull data from remote storage on Google Cloud.
+
+An example of a triggered workflow can be seen *here: <[weblink](https://github.com/HubertWojcik10/mlops_project/actions/runs/12905913970)>*
 
 ## Running code and tracking experiments
 
