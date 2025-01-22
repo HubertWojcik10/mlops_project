@@ -76,9 +76,18 @@ jobs:
           pip install -r requirements.txt -r requirements_dev.txt
           pip list
 
+      # - name: Run Pre-Commit
+      #   run: |
+      #     pip install pre-commit
+      #     pre-commit run --all-files
+
       - name: Run Pre-Commit
+        env:
+          PRE_COMMIT_HOME: ${{ runner.temp }}/pre-commit-cache
         run: |
           pip install pre-commit
+          pre-commit clean  # Clear any existing cache
+          pre-commit install --install-hooks  # Install hooks explicitly
           pre-commit run --all-files
 
       - name: Check Code Style with Black
