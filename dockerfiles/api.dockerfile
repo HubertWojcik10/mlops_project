@@ -1,14 +1,14 @@
 FROM --platform=linux/amd64 python:3.11-slim AS base
 
-WORKDIR /code
-COPY ./requirements.txt /code/requirements.txt
-COPY ./pyproject.toml /code/pyproject.toml
-COPY ./configs/ /code/configs/
-COPY ./src/ /code/src/
+EXPOSE $PORT
 
-RUN pip install -r requirements.txt --no-cache-dir --verbose
+WORKDIR /
 
-COPY ./app /code/app
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    software-properties-common \
+    git \
+    && rm -rf /var/lib/apt/lists/*
 
 COPY requirements.txt requirements.txt
 COPY pyproject.toml pyproject.toml
