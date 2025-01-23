@@ -54,7 +54,7 @@ will check the repositories and the code to verify your answers.
 * [x] Create the initial file structure using cookiecutter with an appropriate template (M6)
 * [x] Fill out the `data.py` file such that it downloads whatever data you need and preprocesses it (if necessary) (M6)
 * [x] Add a model to `model.py` and a training procedure to `train.py` and get that running (M6)
-* [ ] Remember to fill out the `requirements.txt` and `requirements_dev.txt` file with whatever dependencies that you
+* [x] Remember to fill out the `requirements.txt` and `requirements_dev.txt` file with whatever dependencies that you
     are using (M2+M6)
 * [x] Remember to comply with good coding practices (`pep8`) while doing the project (M7)
 * [x] Do a bit of code typing and remember to document essential parts of your code (M7)
@@ -148,8 +148,8 @@ We used the third-party framework Black in our project. Black is an automatic co
 >
 > Answer:
 
-We used pip freeze and poetry to manage dependencies in our projects. We created two separate files: requirements.txt for production dependencies and requirements_dev.txt for development tools.
-Each team member worked in theier own virtual environment during development. To replicaate the environment, a new team member would need to create a virtual environment using the following commands:
+We used pip freeze to manage dependencies in our projects. We have created two separate files - requirements.txt for production dependencies and requirements_dev.txt for development tools.
+Each team member worked in their own virtual environment during development. To replicaate the environment, a new team member would need to create a virtual environment using the following commands:
 ```
 python -m venv venv
 source venv/bin/activate  # For Linux/Mac
