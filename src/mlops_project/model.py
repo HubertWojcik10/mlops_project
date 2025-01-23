@@ -7,10 +7,12 @@ from loguru import logger
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
+
 class ResNet18ForFMNIST(nn.Module):
     """
     ResNet18 model adapted for Fashion MNIST.
     """
+
     def __init__(self, config: DictConfig):
         super(ResNet18ForFMNIST, self).__init__()
 
@@ -27,19 +29,22 @@ class ResNet18ForFMNIST(nn.Module):
             kernel_size=7,
             stride=2,
             padding=3,
-            bias=False
+            bias=False,
         )
         logger.info("Modified first convolution layer to accept 1 channel input")
 
         # Modify the fully connected layer to match the number of classes in Fashion MNIST
         self.resnet18.fc = nn.Linear(
             in_features=self.resnet18.fc.in_features,
-            out_features=config.data.num_classes
+            out_features=config.data.num_classes,
         )
-        logger.info(f"Modified fully connected layer to output {config.data.num_classes} classes")
+        logger.info(
+            f"Modified fully connected layer to output {config.data.num_classes} classes"
+        )
 
     def forward(self, x):
         return self.resnet18(x)
+
 
 def get_model(config: DictConfig):
     model = ResNet18ForFMNIST(config)

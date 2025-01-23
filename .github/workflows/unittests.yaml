@@ -1,4 +1,3 @@
-
 name: Unit Tests
 
 on:
@@ -50,11 +49,18 @@ jobs:
           DVC_REMOTE_URL: ${{ secrets.DVC_REMOTE_URL }}
           GOOGLE_APPLICATION_CREDENTIALS: "gcp-key.json"
         run: |
-          dvc remote remove myremote || true
+          if dvc remote list | grep -q myremote; then
+            dvc remote remove myremote
+          fi
           dvc remote add -d myremote $DVC_REMOTE_URL
-          dvc status  # This will show what files need to be pulled
-          dvc pull -v  # Added -v for verbose output
-          ls -la data/processed/  # Check if files are actually there
+          dvc status  # Show what files need to be pulled
+          dvc pull -v  # Verbose output for pull
+          if [ "$RUNNER_OS" == "Windows" ]; then
+            dir "data\processed\\"  # Windows directory listing
+          else
+            ls -la data/processed/  # Unix directory listing
+          fi
+        shell: bash
 
       - name: Install dependencies
         run: |
@@ -63,9 +69,27 @@ jobs:
           pip list
 
       - name: Run Pre-Commit
+        env:
+          PRE_COMMIT_HOME: ${{ runner.temp }}/pre-commit-cache
         run: |
           pip install pre-commit
+          pre-commit clean
+          pre-commit install --install-hooks
           pre-commit run --all-files
+
+      - name: Check Code Style with Black
+        run: |
+          pip install black
+          black --check .
+
+      - name: Set PYTHONPATH
+        run: |
+          if [[ "$RUNNER_OS" == "Windows" ]]; then
+            echo "PYTHONPATH=$env:PYTHONPATH;$(pwd)/src" >> $env:GITHUB_ENV
+          else
+            echo "PYTHONPATH=$PYTHONPATH:$(pwd)/src" >> $GITHUB_ENV
+          fi
+        shell: bash
 
       - name: Run tests & coverage
         run: |

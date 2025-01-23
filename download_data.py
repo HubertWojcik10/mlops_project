@@ -4,9 +4,11 @@ import torchvision.transforms as transforms
 import os
 import pickle
 
-def load_and_save_fashion_mnist(save_dir='./data/processed'):
+
+def load_and_save_fashion_mnist(save_dir="./data/processed"):
     # Create directory if it doesn't exist
     os.makedirs(save_dir, exist_ok=True)
+
 
     # Define the transforms
     transform = transforms.Compose([
@@ -16,25 +18,17 @@ def load_and_save_fashion_mnist(save_dir='./data/processed'):
 
     # Load training data
     train_dataset = torchvision.datasets.FashionMNIST(
-        root='./data',
-        train=True,
-        download=True,
-        transform=transform
+        root="./data", train=True, download=True, transform=transform
     )
 
     # Load test data
     test_dataset = torchvision.datasets.FashionMNIST(
-        root='./data',
-        train=False,
-        download=True,
-        transform=transform
+        root="./data", train=False, download=True, transform=transform
     )
 
     # Create data loaders
     train_loader = torch.utils.data.DataLoader(
-        train_dataset,
-        batch_size=len(train_dataset),
-        shuffle=False
+        train_dataset, batch_size=len(train_dataset), shuffle=False
     )
 
     test_loader = torch.utils.data.DataLoader(
@@ -67,9 +61,11 @@ def load_and_save_fashion_mnist(save_dir='./data/processed'):
     print(f"Training set shape: {train_data[0].shape}")
     print(f"Test set shape: {test_data[0].shape}")
 
+
 # Example usage
 if __name__ == "__main__":
     load_and_save_fashion_mnist()
+
 
 # To load the saved dataset later:
 def load_saved_dataset(save_dir='fashion_mnist_data'):

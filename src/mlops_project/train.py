@@ -33,7 +33,7 @@ def train(model, train_loader, val_loader, loss_fn, optimizer, epoch):
         optimizer.step()
 
         if i % 100 == 0:
-            wandb.log({'iter': i, 'loss': loss.item()})
+            wandb.log({"iter": i, "loss": loss.item()})
             logger.info(f"Epoch {epoch}, iter {i}, loss: {loss.item()}")
             logger.debug(f"Epoch {epoch}, iter {i}, loss: {loss.item()}")
 
@@ -50,12 +50,15 @@ def train(model, train_loader, val_loader, loss_fn, optimizer, epoch):
     train_loss /= len(train_loader)
     return train_loss, val_loss
 
+
 def compare_models_val_loss(current_val, new_val):
     return current_val > new_val
+
 
 def save_model(model, path):
     torch.save(model.state_dict(), path)
     logger.info(f"Model saved to {path}")
+
 
 def train_sweep(config: DictConfig):
     config_dict = OmegaConf.to_container(config, resolve=True)
@@ -67,14 +70,19 @@ def train_sweep(config: DictConfig):
         logger.info(f"Run name: {run_name}")
         logger.info("Training started")
 
+
         # Model initialization
         model = get_model(config)
         model.to(DEVICE)
         logger.info("Model added to device")
 
+
         # Data loading
-        train_loader, val_loader = get_train_loaders(wb_config.paths['processed_dir'], wb_config.batch_size)
+        train_loader, val_loader = get_train_loaders(
+            wb_config.paths["processed_dir"], wb_config.batch_size
+        )
         logger.info("Data loaders initialized")
+
 
         # Loss function and optimizer
         loss_fn = torch.nn.CrossEntropyLoss()
@@ -121,12 +129,11 @@ def main(config: DictConfig):
     with open(config.paths.sweep_path, "r") as file:
         sweep_config = yaml.safe_load(file)
 
-    print(OmegaConf.to_yaml(config))
-    print(sweep_config)
     download_and_preprocess(config)
 
-    sweep_id = wandb.sweep(sweep_config, project='sweep_project')
+    sweep_id = wandb.sweep(sweep_config, project="sweep_project")
     wandb.agent(sweep_id, function=lambda: train_sweep(config), count=6)
+
 
 if __name__ == "__main__":
     main()
