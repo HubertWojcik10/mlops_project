@@ -179,4 +179,4 @@ cython_debug/
 data/processed/*.pkl
 !data/processed/*.dvc
 .hydra/
-
+configs/credentials.json
