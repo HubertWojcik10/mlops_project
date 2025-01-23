@@ -412,7 +412,7 @@ Although profiling and testing didn’t reveal major issues, we recognize that n
 >
 > Answer:
 
---- question 17 fill here --- Hubert
+For storing our data with connection to DVC, we have used a GCP Bucket. For building docker images, we've used Google Artifact Registry. We've created various custom jobs in Vertex AI to train our model and then store it in a GCP Bucket. For API deployment, we've used GCP Cloud Runs.
 
 ### Question 18
 
