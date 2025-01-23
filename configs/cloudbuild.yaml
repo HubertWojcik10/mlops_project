@@ -1,0 +1,21 @@
+steps:
+- name: 'gcr.io/cloud-builders/docker'
+  id: 'Build train container image'
+  args: [
+    'build',
+    '.',
+    '-t',
+    'europe-west10-docker.pkg.dev/fashion-mnist-448314/docker-registry/train',
+    '-f',
+    'dockerfiles/train.dockerfile'
+  ]
+  env:
+    - 'DOCKER_BUILDKIT=1'
+- name: 'gcr.io/cloud-builders/docker'
+  id: 'Push train container image'
+  args: [
+    'push',
+    'europe-west10-docker.pkg.dev/fashion-mnist-448314/docker-registry/train'
+  ]
+options:
+  logging: CLOUD_LOGGING_ONLY

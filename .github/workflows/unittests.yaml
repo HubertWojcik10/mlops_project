@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - kata
   pull_request:
     branches:
       - main
@@ -92,21 +93,23 @@ jobs:
         shell: bash
 
       - name: Run tests & coverage
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS: "gcp-key.json"
         run: |
           coverage run --source=src -m pytest tests/ --junitxml=pytest-report.xml
           coverage report -m
           coverage xml
 
       - name: Upload Coverage Report
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
-          name: coverage-report
+          name: coverage-report-${{ matrix.os }}-py${{ matrix.python-version }}
           path: coverage*.xml
 
       - name: Upload Test Results
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
-          name: pytest-report
+          name: pytest-report-${{ matrix.os }}-py${{ matrix.python-version }}
           path: pytest-report.xml
 
       - name: Upload coverage to Codecov

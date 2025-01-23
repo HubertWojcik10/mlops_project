@@ -7,7 +7,7 @@ hydra:
 
 # Training Configuration
 experiment:
-  epochs: 2
+  epochs: 1
 
 data:
   name: FashionMNIST
@@ -19,3 +19,6 @@ paths:
   processed_dir : "./data/processed"
   save_dir: models/
   sweep_path: configs/sweep.yaml
+
+cloud:
+  push_to_cloud: true

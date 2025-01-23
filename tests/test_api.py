@@ -9,18 +9,20 @@ from src.mlops_project.api import app
 # create a test client
 client = TestClient(app)
 
+
 def test_root_endpoint() -> None:
     """
-        Test the root endpoint
+    Test the root endpoint
     """
     response = client.get("/")
     assert response.status_code == 200
     assert "message" in response.json()
     assert "status-code" in response.json()
 
+
 def test_sample_image_endpoint() -> None:
     """
-        Test the sample image endpoint.
+    Test the sample image endpoint.
     """
     response = client.get("/sample/image")
     assert response.status_code == 200
@@ -34,11 +36,12 @@ def test_sample_image_endpoint() -> None:
         response = client.get(f"/sample/image?dataset={dataset}")
         assert response.status_code == 200
 
+
 def test_predict_sample_endpoint() -> None:
     """
-        Test the predict sample endpoint.
+    Test the predict sample endpoint.
     """
-    
+
     response = client.get("/predict/sample/0")
     assert response.status_code == 200
     assert "prediction" in response.json()
@@ -51,20 +54,20 @@ def test_predict_sample_endpoint() -> None:
     response = client.get("/predict/sample/-1")
     assert response.status_code == 404
 
+
 def test_predict_upload_endpoint() -> None:
     """
-        Test the predict upload endpoint.
+    Test the predict upload endpoint.
     """
-    
+
     # create dummy image for testing
-    img = Image.new('RGB', (28, 28), color='white')
+    img = Image.new("RGB", (28, 28), color="white")
     img_byte_arr = io.BytesIO()
-    img.save(img_byte_arr, format='PNG')
+    img.save(img_byte_arr, format="PNG")
     img_byte_arr = img_byte_arr.getvalue()
 
     response = client.post(
-        "/predict/upload",
-        files={"file": ("test_image.png", img_byte_arr, "image/png")}
+        "/predict/upload", files={"file": ("test_image.png", img_byte_arr, "image/png")}
     )
     assert response.status_code == 200
     assert "prediction" in response.json()
@@ -73,9 +76,10 @@ def test_predict_upload_endpoint() -> None:
 
     response = client.post(
         "/predict/upload",
-        files={"file": ("test.txt", b"invalid content", "text/plain")}
+        files={"file": ("test.txt", b"invalid content", "text/plain")},
     )
     assert response.status_code == 400
+
 
 if __name__ == "__main__":
     pytest.main([__file__])

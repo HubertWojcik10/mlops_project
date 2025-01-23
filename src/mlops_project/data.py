@@ -8,7 +8,11 @@ import hydra
 from omegaconf import DictConfig
 
 
-def download_and_preprocess(config: DictConfig):
+def download_and_preprocess(config: DictConfig) -> None:
+    """
+    Download the data (if not accessible).
+    Note: not used in the final architecture.
+    """
     print("Downloading Fashion MNIST dataset...")
 
     raw_dir = Path(config.paths.raw_dir)
@@ -43,8 +47,10 @@ def download_and_preprocess(config: DictConfig):
     print(f"Data processed and saved to {processed_dir}")
 
 
-def save_data(dataset, data_type, processed_dir):
-    """Save dataset to Pickle file"""
+def save_data(dataset: Dataset, data_type: str, processed_dir: str) -> None:
+    """
+    Save dataset to Pickle file.
+    """
     data_path = processed_dir / f"{data_type}_data.pkl"
 
     images = dataset.data.numpy()

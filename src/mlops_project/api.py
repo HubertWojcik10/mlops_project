@@ -5,13 +5,18 @@ import io
 from PIL import Image
 import numpy as np
 from http import HTTPStatus
-from src.mlops_project.data import get_train_loaders, download_and_preprocess, get_test_loader
+from src.mlops_project.data import (
+    get_train_loaders,
+    download_and_preprocess,
+    get_test_loader,
+)
 from src.mlops_project.model import ResNet18ForFMNIST
 from omegaconf import OmegaConf, DictConfig
 from torch.utils.data import RandomSampler
 from torchvision import transforms
 from torch import nn
 from typing import Dict
+from google.cloud import storage
 
 CONFIG_PATH = "./configs/config.yaml"
 tags_metadata = [
@@ -29,32 +34,49 @@ tags_metadata = [
     },
 ]
 
+config = OmegaConf.load(CONFIG_PATH)
 app = FastAPI(openapi_tags=tags_metadata)
 
-def load_model(config: DictConfig, path: str) -> nn.Module:
+
+def load_model(config: DictConfig) -> nn.Module:
     """
-        Load the resnet-18 model.
+    Load resnet-18 model from GCS bucket.
     """
+    client = storage.Client()
+    blob = client.bucket("fashion_mnist_data_bucket").blob("models/model.pth")
     model = ResNet18ForFMNIST(config=config)
+    model.load_state_dict(torch.load(io.BytesIO(blob.download_as_bytes())))
+    return model.eval()
 
-    model.load_state_dict(torch.load(path))
-    model.eval()
-    return model
 
-LABELS = ['T-shirt/top', 'Trouser', 'Pullover', 'Dress', 'Coat',
-          'Sandal', 'Shirt', 'Sneaker', 'Bag', 'Ankle boot']
+model = load_model(config=config)
 
-transform = transforms.Compose([
-    transforms.Grayscale(),
-    transforms.Resize((28, 28)),
-    transforms.ToTensor(),
-])
+LABELS = [
+    "T-shirt/top",
+    "Trouser",
+    "Pullover",
+    "Dress",
+    "Coat",
+    "Sandal",
+    "Shirt",
+    "Sneaker",
+    "Bag",
+    "Ankle boot",
+]
+
+transform = transforms.Compose(
+    [
+        transforms.Grayscale(),
+        transforms.Resize((28, 28)),
+        transforms.ToTensor(),
+    ]
+)
 
 
 @app.get("/")
 def root() -> Dict[str, str]:
-    """ 
-        Homepage & Health check.
+    """
+    Homepage & Health check.
     """
     response = {
         "message": HTTPStatus.OK.phrase,
@@ -62,21 +84,25 @@ def root() -> Dict[str, str]:
     }
     return response
 
+
 @app.get("/sample/image", tags=["Sample"])
 async def sample_image(dataset: str = "train", size: int = 280) -> Response:
     """
-        Return a sample image from the dataset as PNG.
+    Return a sample image from the dataset as PNG.
     """
-    config = OmegaConf.load(CONFIG_PATH)
     download_and_preprocess(config)
 
     # get the appropriate dataset
     if dataset == "test":
         loader = get_test_loader(config.paths.processed_dir, config.data.api_batch_size)
     elif dataset == "train":
-        loader, _ = get_train_loaders(config.paths.processed_dir, config.data.api_batch_size)
+        loader, _ = get_train_loaders(
+            config.paths.processed_dir, config.data.api_batch_size
+        )
     elif dataset == "val":
-        _, loader = get_train_loaders(config.paths.processed_dir, config.data.api_batch_size)
+        _, loader = get_train_loaders(
+            config.paths.processed_dir, config.data.api_batch_size
+        )
     else:
         raise ValueError("The dataset parameter should be [train, test, val]")
 
@@ -97,7 +123,7 @@ async def sample_image(dataset: str = "train", size: int = 280) -> Response:
     # create a byte buffer for the image
     # a byte buffer is a temporary storage area in memory that holds bytes of data.
     buf = io.BytesIO()
-    pil_image.save(buf, format='PNG')
+    pil_image.save(buf, format="PNG")
     buf.seek(0)
 
     return Response(
@@ -105,23 +131,22 @@ async def sample_image(dataset: str = "train", size: int = 280) -> Response:
         media_type="image/png",
         headers={
             "X-Fashion-MNIST-Label": LABELS[label],
-            "X-Fashion-MNIST-Label-Index": str(label)
-        }
+            "X-Fashion-MNIST-Label-Index": str(label),
+        },
     )
 
+
 @app.get("/predict/sample/{sample_id}", tags=["Predict Sample"])
-async def predict_sample(sample_id: int, model_path: str = "./models/model.pth") -> Dict[str, str]:
+async def predict_sample(sample_id: int) -> Dict[str, str]:
     """
-        Get model prediction for a specific sample from the dataset.
+    Get model prediction for a specific sample from the dataset.
     """
-    config = OmegaConf.load(CONFIG_PATH)
     loader = get_test_loader(config.paths.processed_dir, config.data.api_batch_size)
 
     if sample_id < 0 or sample_id >= len(loader.dataset):
         raise HTTPException(status_code=404, detail="Sample ID out of range")
 
     image, true_label = loader.dataset[sample_id]
-    model = load_model(config=config, path=model_path)
 
     with torch.no_grad():
         output = model(image.unsqueeze(0))
@@ -133,20 +158,21 @@ async def predict_sample(sample_id: int, model_path: str = "./models/model.pth")
         "prediction_index": str(pred_label),
         "true_label": LABELS[true_label],
         "true_label_index": str(true_label),
-        "confidence": str(round(float(confidence), 5))
+        "confidence": str(round(float(confidence), 5)),
     }
 
+
 @app.post("/predict/upload", tags=["Predict File"])
-async def predict_upload(file: UploadFile = File(...), model_path: str = "./models/model.pth") -> Dict[str, str]:
+async def predict_upload(file: UploadFile = File(...)) -> Dict[str, str]:
     """
-        Get prediction for an uploaded image.
+    Get prediction for an uploaded image.
     """
     try:
         contents = await file.read()
         image = Image.open(io.BytesIO(contents))
     except HTTPException as exc:
         raise HTTPException(status_code=400, detail="Invalid image file") from exc
-    except (IOError, OSError) as exc:  
+    except (IOError, OSError) as exc:
         raise HTTPException(status_code=400, detail="Invalid image file") from exc
 
     try:
@@ -156,7 +182,6 @@ async def predict_upload(file: UploadFile = File(...), model_path: str = "./mode
 
     config = OmegaConf.load(CONFIG_PATH)
 
-    model = load_model(config=config, path=model_path)
     with torch.no_grad():
         output = model(tensor.unsqueeze(0))
         pred_label = output.argmax(dim=1).item()
@@ -165,5 +190,5 @@ async def predict_upload(file: UploadFile = File(...), model_path: str = "./mode
     return {
         "prediction": LABELS[pred_label],
         "prediction_index": str(pred_label),
-        "confidence": str(round(float(confidence), 5))
+        "confidence": str(round(float(confidence), 5)),
     }

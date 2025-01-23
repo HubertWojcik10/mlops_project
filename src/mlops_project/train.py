@@ -8,6 +8,8 @@ import sys
 import hydra
 import yaml
 from omegaconf import DictConfig, OmegaConf
+from google.cloud import storage
+import os
 
 logger.remove()
 logger.add(sys.stderr, format="{time} {level} {message}", level="INFO")
@@ -87,27 +89,37 @@ def train_sweep(config: DictConfig):
         # Track the best model
         current_val_loss = float("inf")
 
-        with torch.profiler.profile(
-            activities=[
-                torch.profiler.ProfilerActivity.CPU,
-                torch.profiler.ProfilerActivity.CUDA,
-            ],
-            record_shapes=True,
-            profile_memory=True,
-            with_stack=True,
-        ) as prof:
-            for epoch in range(wb_config.experiment["epochs"]):
-                wandb.log({"epoch": epoch})
-                train_loss, val_loss = train(
-                    model, train_loader, val_loader, loss_fn, optimizer, epoch
-                )
-                wandb.log({"train_loss": train_loss, "val_loss": val_loss})
+        for epoch in range(wb_config.experiment["epochs"]):
+            wandb.log({"epoch": epoch})
+            train_loss, val_loss = train(
+                model, train_loader, val_loader, loss_fn, optimizer, epoch
+            )
+            wandb.log({"train_loss": train_loss, "val_loss": val_loss})
 
-                # Save the model if validation loss improves
-                if compare_models_val_loss(current_val_loss, val_loss):
-                    model_path = Path(f"{wb_config.paths['save_dir']}/model.pth")
-                    save_model(model, model_path)
-                    current_val_loss = val_loss
+            # Save the model if validation loss improves
+            if compare_models_val_loss(current_val_loss, val_loss):
+                model_path = Path(f"{wb_config.paths['save_dir']}/model.pth")
+                save_model(model, model_path)
+                current_val_loss = val_loss
+
+    if wb_config.cloud["push_to_cloud"]:
+        bucket_name = "fashion_mnist_data_bucket"
+        model_filename = "model.pth"
+        gcs_path = f"models/{model_filename}"
+
+        # Initialize the Google Cloud Storage client
+        storage_client = storage.Client()
+
+        # Reference the GCS bucket
+        bucket = storage_client.bucket(bucket_name)
+
+        # Create a blob (file object) in GCS
+        blob = bucket.blob(gcs_path)
+
+        # Upload the local model file to GCS
+        blob.upload_from_filename(model_path)
+
+        print(f"Model uploaded to gs://{bucket_name}/{gcs_path}")
 
 
 @hydra.main(config_path="../../configs", config_name="config", version_base="1.1")
@@ -115,8 +127,6 @@ def main(config: DictConfig):
     with open(config.paths.sweep_path, "r") as file:
         sweep_config = yaml.safe_load(file)
 
-    print(OmegaConf.to_yaml(config))
-    print(sweep_config)
     download_and_preprocess(config)
 
     sweep_id = wandb.sweep(sweep_config, project="sweep_project")
