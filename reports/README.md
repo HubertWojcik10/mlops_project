@@ -394,7 +394,8 @@ Loss per Iteration: This shows how the loss changes during each iteration of the
 >
 > Answer:
 
---- question 16 fill here --- Katarina
+The debugging process was mostly done using the VSCode debugger and breakpoints to step through the code. This was the easiest way for us to quickly identify and fix problems like incorrect data formats or other logic errors. We used the `torch.profiler` to analyze the performance of the code. Profiling provided valuable insights into resource utilization, such as GPU memory usage and time spent on specific operations like data loading, forward passes, and backpropagation. While we didn’t encounter any significant performance bottlenecks, this analysis helped confirm that the code was running efficiently and no critical optimizations were needed.
+Although profiling and testing didn’t reveal major issues, we recognize that no code is ever truly perfect.
 
 ## Working in the cloud
 
@@ -557,7 +558,7 @@ We have not load tested the API due to time constraints. We believe though that 
 >
 > Answer:
 
---- question 26 fill here --- Katarina
+We did not manage to implement monitoring. However, monitoring would be important for ensuring the reliability of the application. It would allow us to track metrics like prediction accuracy, latency, and resource usage. Monitoring could also detect data drift—changes in data distribution or the relationship between variables and outputs—which can affect performance. Additionally, it would help identify unexpected behavior in real time, enabling quick fixes such as retraining the model or adjusting the system. Logs and visualizations from monitoring tools could reveal usage patterns and help optimize the system for better performance and user experience.
 
 ## Overall discussion of project
 
@@ -652,4 +653,4 @@ Drift detection service would also bring value, especially if our goal was to su
 * s243660: Sweep, Weight and Biases, Model Building, Hydra
 * s243896: Cookiecutter, API, Unit Tests, DVC, Deployment
 
---- question 31 fill here --- Katarina
+The team worked collaboratively on all aspects of the project, but certain parts were assigned to individual members. As mentioned before, we all reviewed each others work before a brach could be merged to main. Student s243906 was responsible for logging, profiling, setting up pre-commit hooks, and managing CI/CD pipelines. Student s243933 focused on Docker setup, deployment, coding practices, and integrating Google Cloud Platform (GCP). Student s243660 worked on hyperparameter sweeps, integrated Weight and Biases, built the models, and managed configurations using Hydra. Student s243896 led the setup of the Cookiecutter project template, API development, unit tests, data versioning with DVC, and deployment.
