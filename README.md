@@ -6,44 +6,62 @@ Fashion-MNIST (FMNIST) is an image dataset consisting of clothing articles from 
 
 The overall goal of the project is to build a trustworthy CNN model by clearly defining and maintaining an MLOps pipeline. For easy and organized collaboration, we will fork the provided MLOps cookiecutter template on GitHub, and then to achieve reproducibility, we aim to utilize Docker.
 
-## Project Structure (TBD)
+## Project Structure
 
-The directory structure of the project (as per template) looks like this:
+The directory structure of the project looks like this:
 ```txt
+├── .dvc/
+│   ├── .gitignore
+│   └── config
 ├── .github/                  # Github actions and dependabot
 │   ├── dependabot.yaml
 │   └── workflows/
-│       └── tests.yaml
-├── configs/                  # Configuration files
+│   │   └── unnittests.yaml
+├── configs/                    # Configuration files
+│   ├── .gitkeep
+│   ├── api_cloudbuild.yaml
+│   ├── cloudbuild.yaml
+│   ├── config.yaml
+│   ├── config_cpu.yaml
+│   ├── sweep.yaml
+│   └── vertex_ai_train.yaml
 ├── data/                     # Data directory
-│   ├── processed
-│   └── raw
+│   └── processed/
+│   │   ├── test_data.pkl.dvc
+│   │   └── train_data.pkl.dvc
 ├── dockerfiles/              # Dockerfiles
 │   ├── api.Dockerfile
 │   └── train.Dockerfile
-├── docs/                     # Documentation
-│   ├── mkdocs.yml
-│   └── source/
-│       └── index.md
 ├── models/                   # Trained models
-├── notebooks/                # Jupyter notebooks
+│   └── .gitkeep
 ├── reports/                  # Reports
+│   ├── README.md
+│   ├── report.py
 │   └── figures/
+│   │   ├── bucket.png
+│   │   ├── buckets_overview.png
+│   │   ├── build.png
+│   │   ├── fashion_mnist_bucket.png
+│   │   ├── overview.png
+│   │   ├── registry.png
+│   │   ├── structure.png
+│   │   ├── wandb.png
+│   │   └── wandbours.png
 ├── src/                      # Source code
-│   ├── project_name/
+│   ├── mlops_project/
 │   │   ├── __init__.py
 │   │   ├── api.py
 │   │   ├── data.py
 │   │   ├── evaluate.py
-│   │   ├── models.py
-│   │   ├── train.py
-│   │   └── visualize.py
+│   │   ├── model.py
+│   │   └── train.py
 └── tests/                    # Tests
 │   ├── __init__.py
 │   ├── test_api.py
 │   ├── test_data.py
 │   └── test_model.py
 ├── .gitignore
+├── .dvcignore
 ├── .pre-commit-config.yaml
 ├── LICENSE
 ├── pyproject.toml            # Python project file
