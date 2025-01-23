@@ -182,20 +182,13 @@ The project training is run on Google Vertex AI, which automatically create a ne
 > **We expect that you initialized your project using the cookiecutter template. Explain the overall structure of your**
 > **code. What did you fill out? Did you deviate from the template in some way?**
 >
-> Recommended answer length: 100-200 words
->
-> Example:
-> *From the cookiecutter template we have filled out the ... , ... and ... folder. We have removed the ... folder*
-> *because we did not use any ... in our project. We have added an ... folder that contains ... for running our*
-> *experiments.*
->
-> Answer: german
+From the cookiecutter template, we have used the data, dockerfiles, src, tests, configs, and .github folders. The data folder includes two .pkl.dvc files (for train and test datasets), which are used to track and manage datasets with DVC, ensuring reproducibility. The dockerfiles folder contains two Dockerfiles: one (train.dockerfile) for containerizing the training process and another (api.dockerfile) for containerizing the deployment process.
 
-From the cookiecutter template, we have used the `data`, `dockerfiles`, `src`, `tests`, and `configs` folders. The data folder includes two `.pkl.dvc `files (for train and test datasets), which are used to track and manage the datasets with DVC, ensuring reproducibility. The dockerfiles folder contains two Dockerfiles: one (`train.dockerfile`) for containerizing the training process and another (`api.dockerfile`) for containerizing the deployment process.
+The src/mlops_project folder contains scripts to create, train, and evaluate a ResNet18 model for classifying images from the FMNIST dataset into 10 classes. It also includes api.py, which sets up the FastAPI application for deploying the model.
 
-The `src/mlops_project` folder contains scripts to create, train, and evaluate a ResNet18 model to classify images from the FMNIST dataset into 10 classes. It also includes `api.py`, which sets up the FastAPI application for deploying the model.
+In the configs folder, we maintain multiple YAML files for configuration. These include cloudbuild.yaml for automating builds in Google Cloud, config.yaml and config_cpu.yaml for training configurations, sweep.yaml for hyperparameter optimization, and vertex_ai_train.yaml for running training jobs on Vertex AI.
 
-In the configs folder, we have multiple YAML files for configuration. These include `cloudbuild.yaml` for automating builds in Google Cloud, `config.yaml` and `config_cpu.yaml` for training configurations, `sweep.yaml` for hyperparameter optimization, and `vertex_ai_train.yaml` for running training jobs on Vertex AI.
+Additionally, we made use of GitHub Actions for CI/CD workflows. This allowed us to automate tasks like running tests, linting code, and ensuring proper integration at every stage of development.
 
 ### Question 6
 
