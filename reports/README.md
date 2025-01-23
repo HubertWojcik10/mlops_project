@@ -264,9 +264,9 @@ An example of a triggered workflow can be seen *here: <[weblink](https://github.
 >
 > Answer:
 
-We configured experiments using Hydra and YAML configuration files stored in the \texttt{configs} folder. The \texttt{config.yaml} file contains general project configurations, such as paths, while the \texttt{sweep.yaml} file is used for hyperparameter optimization. The sweep file uses the \texttt{grid} search method to find the best combination of hyperparameters like learning rate (\texttt{lr}) and batch size (\texttt{batch\_size}) with the goal of minimizing validation loss.
+We configured experiments using Hydra and YAML configuration files stored in the configs folder. The config.yaml file contains general project configurations, such as paths, while the sweep.yaml file is used for hyperparameter optimization. The sweep file uses the grid search method to find the best combination of hyperparameters like learning rate (lr) and batch size (batch_size) with the goal of minimizing validation loss.
 
-In \texttt{train.py}, Hydra is used to load the \texttt{config.yaml} file. The script reads the \texttt{sweep.yaml} file to define the search space and initialize hyperparameter sweeps with Weights \& Biases. 
+In train.py, Hydra is used to load the config.yaml file. The script reads the sweep.yaml file to define the search space and initialize hyperparameter sweeps with Weights & Biases. 
 
 To update parameters directly when running the script, we could override them from the command line using Hydra syntax. For example, to specify a learning rate and batch size from the sweep file values, we can run:  
 ```
