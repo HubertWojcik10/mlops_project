@@ -167,12 +167,12 @@ We used pip freeze and poetry to manage dependencies in our projects. We created
 Each team member worked in theier own virtua environment during development. To replicaate the environment, a new team member would need to create a virtual environment using the following commands:
 ```
 python -m venv venv
-source venv/bin/activate  # For Linux/Mac  
+source venv/bin/activate  # For Linux/Mac
 venv\Scripts\activate     # For Windows
 ```
 Then, they would install the dependencies using:
 ```
-pip install -r requirements.txt  
+pip install -r requirements.txt
 pip install -r requirements_dev.txt
 ```
 The project training is run on Google Vertex AI, which automatically create a new environment for each training job. This ensures that the environment is clean and consistent for the model training.
@@ -198,7 +198,7 @@ The project training is run on Google Vertex AI, which automatically create a ne
 > **Did you implement any rules for code quality and format? What about typing and documentation? Additionally,**
 > **explain with your own words why these concepts matters in larger projects.**
 >
-> Recommended answer length: 100-200 words. Hubert
+> Recommended answer length: 100-200 words.
 >
 > Example:
 > *We used ... for linting and ... for formatting. We also used ... for typing and ... for documentation. These*
@@ -206,7 +206,11 @@ The project training is run on Google Vertex AI, which automatically create a ne
 >
 > Answer:
 
---- question 6 fill here ---
+We have implemented pre-commit hooks for basic code quality checks (e.g. removing trailing whitespaces or validating YAML syntax) as well as code formatting using the [black](https://black.readthedocs.io/en/stable/index.html) library. Additionally, we agreed to use type hints in our code for better understanding of each other's work and improved transparency. We found type hints essential, as they quickly show e.g. the input and output of functions, which enhances the development process.
+
+Documentation was not a very significant part of the project, as we opted for checking each other PR's & discussing changes made. However, for bigger "sub-projects", such as the API, documentation was created.
+
+These concepts are important as they introduce code consistency and minimize the risk of erroneous code. Furthermore, it is easier to further develop on / migrate code that is clear and understandable.
 
 ## Version control
 
@@ -217,7 +221,7 @@ The project training is run on Google Vertex AI, which automatically create a ne
 
 > **How many tests did you implement and what are they testing in your code?**
 >
-> Recommended answer length: 50-100 words. 
+> Recommended answer length: 50-100 words.
 >
 > Example:
 > *In total we have implemented X tests. Primarily we are testing ... and ... as these the most critical parts of our*
@@ -225,7 +229,9 @@ The project training is run on Google Vertex AI, which automatically create a ne
 >
 > Answer:
 
---- question 7 fill here --- Hubert
+We have implemented 8 tests, cosisting of more "subtests". Due to the nature of our model (a pre-trained implementation), we have decided to implement basic testing of this feature. Moreover, our data does not tend to change much over time, however tests have been made for that as well, covering the instance, length, and output of various data loaders.
+
+API testing is a significant part of our test logic. We consider it important to test the API carefully, as it is a custom, comprehensive solution. Each endpoint has various "subtests", mostly focusing on checking the response object and it's status code.
 
 ### Question 8
 
@@ -240,9 +246,9 @@ The project training is run on Google Vertex AI, which automatically create a ne
 >
 > Answer:
 
-[our code coverage is 12.87 but there are many not covered parts, so we need an explanation why] Hubert
+In order to assess code coverage, one has to specify a source directory. We have decided that the scope should be big and went for the whole src/ as our source directory. We managed to implement tests only for data.py, model.py, and api.py. That is why our coverage is only 13%, but we would in the future extend the scope to other files in src/. Additionaly, we focused on testing the model itself, rather than it's file (model.py), which we could also include in next iteration of testing. Overall, we are content with the code coverage for the listed files, but the lack of time prevented us to expand the test to the whole src/ module and resulted with a low code coverage.
 
-Achievieng 100% code coverage would not guarantee the code is error-free. Code coverage measures which lines of code are executed by tests, but it doesn not assess the quality of the tests temselves. So, for example, even a 100% code coverage rate could miss edge cases or, once in production, fail due to external dependencies. High coverage is a good indicator of thorough testing, but true reliability requires a combination of high-quality and meaningful tests.
+Achieving 100% code coverage would not guarantee the code is error-free. Code coverage measures which lines of code are executed by tests, but it doesn not assess the quality of the tests temselves. So, for example, even a 100% code coverage rate could miss edge cases or, once in production, fail due to external dependencies. High coverage is a good indicator of thorough testing, but true reliability requires a combination of high-quality and meaningful tests.
 
 ### Question 9
 
@@ -272,7 +278,7 @@ We have used both branches and pull requests (PRs) in our project. Each team mem
 >
 > Answer:
 
-We did use DVC in our project for managing data. Instead of uploading the data directly to GitHub, we stored the training and testing datasets as `train_data.pkl` and `test_data.pkl`. Using DVC helps decouple the data from the code, ensuring that our project remain lightweight and scalable. If we hadn't used DVC, managing multiple versions of the processed data and syncronizing the changes  
+We did use DVC in our project for managing data. Instead of uploading the data directly to GitHub, we stored the training and testing datasets as `train_data.pkl` and `test_data.pkl`. Using DVC helps decouple the data from the code, ensuring that our project remain lightweight and scalable. If we hadn't used DVC, managing multiple versions of the processed data and syncronizing the changes
 
 ### Question 11
 
@@ -293,7 +299,7 @@ We have organized our continuous integration (CI) setup using GitHub Actions, fo
 * We use pytest for running unit tests to ensure that the code functions as expected.
 * Black is used for consistent code formatting, ensuring the code follows the style guide automatically.
 * We use pre-commit hooks to run checks on code quality, including linting and formatting, before code is committed.
-* We use coverage.py to measure code coverage during testing. The final report is generated and uploaded as an artifact, and also, uploaded to Codecov. 
+* We use coverage.py to measure code coverage during testing. The final report is generated and uploaded as an artifact, and also, uploaded to Codecov.
 *  We utilize caching for dependencies to speed up the workflow and reduce the time required for subsequent builds.
 * Data version contron (DVC) is used to manage data dependencies and pull data from remote storage on Google Cloud.
 
@@ -309,7 +315,7 @@ An example of a triggered workflow can be seen *here: <[weblink](https://github.
 > **How did you configure experiments? Did you make use of config files? Explain with coding examples of how you would**
 > **run a experiment.**
 >
-> Recommended answer length: 50-100 words. 
+> Recommended answer length: 50-100 words.
 >
 > Example:
 > *We used a simple argparser, that worked in the following way: Python  my_script.py --lr 1e-3 --batch_size 25*
@@ -415,7 +421,7 @@ An example of a triggered workflow can be seen *here: <[weblink](https://github.
 >
 > Answer:
 
---- 
+---
 **We unfortunately did not use the Compute Engine services for this project. We used Vertex AI for training as answered in Question 22.**
 --- Keerthi
 
@@ -426,7 +432,9 @@ An example of a triggered workflow can be seen *here: <[weblink](https://github.
 >
 > Answer:
 
---- question 19 fill here --- Hubert
+![Bucket Overview](./figures/buckets_overview.png "Bucket Overview")
+![FMnist Bucket](./figures/buckets_overview.png "FMnist Bucket")
+In retrospective, we should have implemented a separate bucket for model storage.
 
 ### Question 20
 
@@ -436,7 +444,7 @@ An example of a triggered workflow can be seen *here: <[weblink](https://github.
 > Answer:
 
 ---
-[GCP Artifact Registry containing docker image](figures/registry.png) 
+[GCP Artifact Registry containing docker image](figures/registry.png)
 --- Keerthi
 
 ### Question 21
@@ -446,7 +454,7 @@ An example of a triggered workflow can be seen *here: <[weblink](https://github.
 >
 > Answer:
 
---- 
+---
 [GCP Build History](figures/build.png)
 --- Keerthi
 
@@ -463,7 +471,7 @@ An example of a triggered workflow can be seen *here: <[weblink](https://github.
 >
 > Answer:
 
---- 
+---
 Even though the Compute Engine API has the ability to create and run VMs, the risk of being responsible to close the VMs manually and otherwise being charged led us to use Vertex AI. Vertex AI provided us the functionality of starting a VM, running a docker image, and then closing the VM once the task was done. Due to its simplicity and easy interface, we chose Vertex AI over Compute Engine. Provided that we already ran cloudbuild.yaml and have a docker image of the training environment in the Artifact Registry, we then run vertex_ai_train.yaml which uses config_cpu.yaml to refer to this docker image while incorporating Secrets Management in GCP to use the WANDB_API_KEY without us having to store it locally!
 --- Keerthi
 
@@ -482,7 +490,21 @@ Even though the Compute Engine API has the ability to create and run VMs, the ri
 >
 > Answer:
 
---- question 23 fill here --- Hubert
+The API was implemented using FastAPI for the Fashion-MNIST classification model. It provides three main endpoints:
+
+1. `/sample/image` - Returns a random sample image from the train/test/val datasets as a PNG file, including the true label in response headers
+2. `/predict/sample/{sample_id}` - Makes predictions on specific samples from the test dataset, returning:
+  - Predicted label and index
+  - True label and index
+  - Model confidence score
+3. `/predict/upload` - Accepts user-uploaded images for prediction, with:
+  - Image preprocessing (grayscale conversion, resizing to 28x28)
+  - Error handling for invalid files
+  - Returns prediction and confidence score
+
+We believe that the endpoints that we serve are "production-like", especially enabling our end-users to upload images and return the predictions of the model. Furthermore, the API includes special features like comprehensive error validation, a customized OpenAPI documentation with tags and descriptions, input validation, and other technical implementations.
+
+The solution ensures proper model loading, tensor handling, and efficient image processing using PIL and BytesIO for effective memory management.
 
 ### Question 24
 
@@ -513,7 +535,9 @@ Even though the Compute Engine API has the ability to create and run VMs, the ri
 >
 > Answer:
 
---- question 25 fill here --- Hubert
+As outlined in question 7, we have implemented API unit tests. The tests cover mostly checking the response object given a dummy model, data point, or different parameters. It was a priority to us as the API was a custom solution and wanted to ensure that it provides consistent, reproducible output. It is worth mentioning that the tests were integrated into our CI/CD workflow.
+
+We have not load tested the API due to time constraints. We believe though that it is an important part of testing. If we were to do it, we would focus on data/model size capacity and user concurrency. When it comes to the first aspect, we would implement a "dummy" model that is e.g. 10x size of our final model (same approach with data) and measure the API response time. For user concurrency, we would simulate events of multiple instances using the API at the same time and would also measure the response time per each endpoint.
 
 ### Question 26
 
@@ -547,7 +571,7 @@ Even though the Compute Engine API has the ability to create and run VMs, the ri
 >
 > Answer:
 
---- 
+---
 We were surprised to see that we used only a dollar of credits! The most expensive service was **hubert i need help here because i cant access the cost**
 --- Keerthi
 
@@ -565,7 +589,11 @@ We were surprised to see that we used only a dollar of credits! The most expensi
 >
 > Answer:
 
---- question 28 fill here --- Hubert
+We believe that the endpoint structure of our API is a unique solution in itself as it offers users flexibility to investigate the data as well as play around with the model, both in terms of input-specific analysis, but also testing the capabilities by uploading an image and checking the response.
+
+In order to further expand the user experiance, in the future we would implement a frontent application based on the FastAPI solution, preferrably using jinja2 for dynamic HTML rendering. Both libraries are very well-integrated. Utilizing Pydantic for more input control would also bring value.
+
+Drift detection service would also bring value, especially if our goal was to supplement the dataset on a regular basis with new input. We could imagine an endpoint with some frontend displaying the historical drift detection logs, so that users could observe how data evolves over time.
 
 ### Question 29
 
