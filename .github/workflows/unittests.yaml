@@ -93,6 +93,8 @@ jobs:
         shell: bash
 
       - name: Run tests & coverage
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS: "gcp-key.json"
         run: |
           coverage run --source=src -m pytest tests/ --junitxml=pytest-report.xml
           coverage report -m
