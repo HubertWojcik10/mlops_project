@@ -70,12 +70,10 @@ def train_sweep(config: DictConfig):
         logger.info(f"Run name: {run_name}")
         logger.info("Training started")
 
-
         # Model initialization
         model = get_model(config)
         model.to(DEVICE)
         logger.info("Model added to device")
-
 
         # Data loading
         train_loader, val_loader = get_train_loaders(
@@ -83,19 +81,20 @@ def train_sweep(config: DictConfig):
         )
         logger.info("Data loaders initialized")
 
-
         # Loss function and optimizer
         loss_fn = torch.nn.CrossEntropyLoss()
         optimizer = torch.optim.Adam(model.parameters(), lr=wb_config.lr)
         logger.info("Loss function and optimizer initialized")
 
         # Track the best model
-        current_val_loss = float('inf')
-        
-        for epoch in range(wb_config.experiment['epochs']):
-            wandb.log({'epoch': epoch})
-            train_loss, val_loss = train(model, train_loader, val_loader, loss_fn, optimizer, epoch)
-            wandb.log({'train_loss': train_loss, 'val_loss': val_loss})
+        current_val_loss = float("inf")
+
+        for epoch in range(wb_config.experiment["epochs"]):
+            wandb.log({"epoch": epoch})
+            train_loss, val_loss = train(
+                model, train_loader, val_loader, loss_fn, optimizer, epoch
+            )
+            wandb.log({"train_loss": train_loss, "val_loss": val_loss})
 
             # Save the model if validation loss improves
             if compare_models_val_loss(current_val_loss, val_loss):
@@ -103,10 +102,10 @@ def train_sweep(config: DictConfig):
                 save_model(model, model_path)
                 current_val_loss = val_loss
 
-    if wb_config.cloud['push_to_cloud']:
+    if wb_config.cloud["push_to_cloud"]:
         bucket_name = "fashion_mnist_data_bucket"
         model_filename = "model.pth"
-        gcs_path = f"models/{model_filename}"  
+        gcs_path = f"models/{model_filename}"
 
         # Initialize the Google Cloud Storage client
         storage_client = storage.Client()
@@ -121,7 +120,6 @@ def train_sweep(config: DictConfig):
         blob.upload_from_filename(model_path)
 
         print(f"Model uploaded to gs://{bucket_name}/{gcs_path}")
-
 
 
 @hydra.main(config_path="../../configs", config_name="config", version_base="1.1")
