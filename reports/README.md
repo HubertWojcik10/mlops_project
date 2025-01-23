@@ -619,7 +619,12 @@ Drift detection service would also bring value, especially if our goal was to su
 >
 > Answer:
 
---- question 29 fill here --- Katarina and Keerthi
+![Architecture of our system](./figures/structure.png "Structure Overview")
+
+The starting point of the system architecture is the local development setup. Here, Hydra and Weights and Biases are used for parameter sweeps, configuration management, and experiment tracking. The code undergoes formatting and quality checks using tools like Black (a formatter) and Pre-Commit hooks to ensure consistency before committing changes.
+When the code is committed and pushed to GitHub, it triggers GitHub Actions, which automates workflows such as testing, building, and deployment. Docker images for the training pipeline and API service are built locally or as part of the CI/CD pipeline, and these images are stored in the Google Artifact Registry for reuse and deployment.
+The training process is carried out on Google Vertex AI, which runs the Docker training image. During this process, DVC is used to manage and track datasets and models. Once the training completes, the updated data and models are pushed to Google Cloud Storage, ensuring versioning and easy access.
+The trained model and associated data are then pulled from Google Cloud Storage for deployment. The API service is containerized and deployed to Google Cloud Run, a serverless platform for running scalable APIs. This enables the model to serve predictions efficiently in production.
 
 ### Question 30
 
