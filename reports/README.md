@@ -189,9 +189,13 @@ The project training is run on Google Vertex AI, which automatically create a ne
 > *because we did not use any ... in our project. We have added an ... folder that contains ... for running our*
 > *experiments.*
 >
-> Answer:
+> Answer: german
 
---- question 5 fill here --- German
+From the cookiecutter template, we have used the `data`, `dockerfiles`, `src`, `tests`, and `configs` folders. The data folder includes two `.pkl.dvc `files (for train and test datasets), which are used to track and manage the datasets with DVC, ensuring reproducibility. The dockerfiles folder contains two Dockerfiles: one (`train.dockerfile`) for containerizing the training process and another (`api.dockerfile`) for containerizing the deployment process.
+
+The `src/mlops_project` folder contains scripts to create, train, and evaluate a ResNet18 model to classify images from the FMNIST dataset into 10 classes. It also includes `api.py`, which sets up the FastAPI application for deploying the model.
+
+In the configs folder, we have multiple YAML files for configuration. These include `cloudbuild.yaml` for automating builds in Google Cloud, `config.yaml` and `config_cpu.yaml` for training configurations, `sweep.yaml` for hyperparameter optimization, and `vertex_ai_train.yaml` for running training jobs on Vertex AI.
 
 ### Question 6
 
@@ -321,23 +325,29 @@ An example of a triggered workflow can be seen *here: <[weblink](https://github.
 > *We used a simple argparser, that worked in the following way: Python  my_script.py --lr 1e-3 --batch_size 25*
 >
 > Answer:
+\section*{Question 12}
 
---- question 12 fill here --- German
+We configured experiments using Hydra and YAML configuration files stored in the \texttt{configs} folder. The \texttt{config.yaml} file contains general project configurations, such as paths, while the \texttt{sweep.yaml} file is used for hyperparameter optimization. The sweep file uses the \texttt{grid} search method to find the best combination of hyperparameters like learning rate (\texttt{lr}) and batch size (\texttt{batch\_size}) with the goal of minimizing validation loss.
+
+In \texttt{train.py}, Hydra is used to load the \texttt{config.yaml} file. The script reads the \texttt{sweep.yaml} file to define the search space and initialize hyperparameter sweeps with Weights \& Biases. 
+
+To update parameters directly when running the script, we could override them from the command line using Hydra syntax. For example, to specify a learning rate and batch size from the sweep file values, we can run:  
+\begin{verbatim}
+python train.py parameters.lr=0.001 parameters.batch_size=64
+\end{verbatim}
+
 
 ### Question 13
 
 > **Reproducibility of experiments are important. Related to the last question, how did you secure that no information**
 > **is lost when running experiments and that your experiments are reproducible?**
 >
-> Recommended answer length: 100-200 words.
->
-> Example:
-> *We made use of config files. Whenever an experiment is run the following happens: ... . To reproduce an experiment*
-> *one would have to do ...*
->
 > Answer:
+We ensured reproducibility by using configuration files and tools like Hydra, DVC, and Weights & Biases (W&B). All the experiment settings, such as learning rates, batch sizes, and file paths, were saved in YAML files (config.yaml and sweep.yaml). These settings were loaded into the train.py script using Hydra, so every experiment run used the exact same configuration.
 
---- question 13 fill here --- German
+Whenever an experiment was run, Hydra saved the configuration details in a unique directory, making it easy to track which settings were used. We also used W&B to log important experiment information, such as hyperparameters, model performance, and training progress.
+
+To reproduce an experiment, one would have to load the saved Hydra configuration or check the settings saved in W&B and run the script with the same parameters. DVC also tracked the dataset version used in the experiment, so the exact data can be restored if needed.
 
 ### Question 14
 
@@ -345,16 +355,17 @@ An example of a triggered workflow can be seen *here: <[weblink](https://github.
 > **service of your choice). This may include loss graphs, logged images, hyperparameter sweeps etc. You can take**
 > **inspiration from [this figure](figures/wandb.png). Explain what metrics you are tracking and why they are**
 > **important.**
->
-> Recommended answer length: 200-300 words + 1 to 3 screenshots.
->
-> Example:
-> *As seen in the first image when have tracked ... and ... which both inform us about ... in our experiments.*
-> *As seen in the second image we are also tracking ... and ...*
->
-> Answer:
 
---- question 14 fill here --- German
+> Answer:
+[wandb[[figures/wandbours.png]]]
+In our experiments, we tracked three key metrics using Weights & Biases (W&B): training loss, validation loss, and loss per iteration across the 6 combinations from our hyperparameter sweep. These metrics help us understand how well the model is performing and guide us in adjusting the training process.
+
+Training Loss: This metric shows how well the model is learning on the training data. A lower training loss indicates that the model is fitting the training data well. However, we must also watch the validation loss to make sure the model is not overfitting.
+
+Validation Loss: This metric measures how well the model generalizes to new, unseen data. If the validation loss stays high while the training loss keeps decreasing, it could mean the model is overfitting to the training data and not performing well on the validation data.
+
+Loss per Iteration: This shows how the loss changes during each iteration of the hyperparameter sweep. By tracking this, we can compare how different hyperparameter combinations affect the model’s training process.
+
 
 ### Question 15
 
