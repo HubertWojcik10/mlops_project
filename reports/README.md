@@ -378,10 +378,10 @@ Loss per Iteration: This shows how the loss changes during each iteration of the
 > Answer:
 
 ---
-> For our project, we developed two images - one for training and one for deployment. The training dockerfile enables us to use VertexAI to train a model on a VM, and the deployment dockerfile allows us to host our model and make predictions from it along with other functionality.
+> For our project, we developed two images - one for training and one for deployment. The training dockerfile enables us to use Vertex AI to train a model on a VM, and the deployment dockerfile allows us to host our model and make predictions from it along with other functionality.
 >
-> * To generate a training docker image, run the following command from the root, `docker run -f dockerfiles/train.dockerfile . -t train:latest´ **(LINK TO DOCKERFILE)**
-> * To genereate a docker image for deployment, run the following command from the root, `docker run -f dockerfiles/api.dockerfile . -t api:latest´ **(LINK TO DOCKERFILE)**
+> * To generate a training docker image, run the following command from the root, `docker run -f dockerfiles/train.dockerfile . -t train:latest´ [train.dockerfile](https://github.com/HubertWojcik10/mlops_project/blob/main/dockerfiles/train.dockerfile)
+> * To genereate a docker image for deployment, run the following command from the root, `docker run -f dockerfiles/api.dockerfile . -t api:latest´ [api.dockerfile](https://github.com/HubertWojcik10/mlops_project/blob/main/dockerfiles/api.dockerfile)
 --- Keerthi
 
 ### Question 16
@@ -481,7 +481,7 @@ In retrospective, we should have implemented a separate bucket for model storage
 > Answer:
 
 ---
-Even though the Compute Engine API has the ability to create and run VMs, the risk of being responsible to close the VMs manually and otherwise being charged led us to use Vertex AI. Vertex AI provided us the functionality of starting a VM, running a docker image, and then closing the VM once the task was done. Due to its simplicity and easy interface, we chose Vertex AI over Compute Engine. Provided that we already ran cloudbuild.yaml and have a docker image of the training environment in the Artifact Registry, we then run vertex_ai_train.yaml which uses config_cpu.yaml to refer to this docker image while incorporating Secrets Management in GCP to use the WANDB_API_KEY without us having to store it locally!
+Even though the Compute Engine API has the ability to create and run VMs, the risk of being responsible to close the VMs manually and otherwise being charged led us to use Vertex AI. Vertex AI provided us the functionality of starting a VM, running a docker image, and then closing the VM once the task was done. Due to its simplicity and easy interface, we chose Vertex AI over Compute Engine. Provided that we already ran `cloudbuild.yaml` and have a docker image of the training environment in the Artifact Registry, we then run `vertex_ai_train.yaml` which uses `config_cpu.yaml` to refer to this docker image while incorporating Secrets Management in GCP to use the `WANDB_API_KEY` without us having to store it locally. Running this submits a job that performs the training on a VM and closes it when done.
 --- Keerthi
 
 ## Deployment
@@ -581,7 +581,7 @@ We did not manage to implement monitoring. However, monitoring would be importan
 > Answer:
 
 ---
-We were surprised to see that we used only a dollar of credits! The most expensive service was **hubert i need help here because i cant access the cost**
+We were surprised to see that we used only ~ $2.12 credits! The most expensive service was the Artifact Registry as it contains our dockerfiles needed for model building and for the FastAPI app. This cost us $1.46, and the rest is split between Vertex AI and Cloud Storage.
 --- Keerthi
 
 ### Question 28
