@@ -183,6 +183,9 @@ The project training is run on Google Vertex AI, which automatically create a ne
 > **We expect that you initialized your project using the cookiecutter template. Explain the overall structure of your**
 > **code. What did you fill out? Did you deviate from the template in some way?**
 >
+>
+> Answer:
+
 From the cookiecutter template, we have used the data, dockerfiles, src, tests, configs, and .github folders. The data folder includes two .pkl.dvc files (for train and test datasets), which are used to track and manage datasets with DVC, ensuring reproducibility. The dockerfiles folder contains two Dockerfiles: one (train.dockerfile) for containerizing the training process and another (api.dockerfile) for containerizing the deployment process.
 
 The src/mlops_project folder contains scripts to create, train, and evaluate a ResNet18 model for classifying images from the FMNIST dataset into 10 classes. It also includes api.py, which sets up the FastAPI application for deploying the model.
