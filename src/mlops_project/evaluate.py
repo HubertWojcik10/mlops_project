@@ -12,7 +12,7 @@ logger.add(sys.stderr, format="{time} {level} {message}", level="INFO")
 logger.add("evaluation.log", rotation="10 MB", level="INFO")
 
 
-def evaluate(config: DictConfig):
+def evaluate(config: DictConfig) -> None:
     """
     Evaluate the model on the test set.
     """

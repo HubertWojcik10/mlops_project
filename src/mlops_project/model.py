@@ -13,7 +13,7 @@ class ResNet18ForFMNIST(nn.Module):
     ResNet18 model adapted for Fashion MNIST.
     """
 
-    def __init__(self, config: DictConfig):
+    def __init__(self, config: DictConfig) -> None:
         super(ResNet18ForFMNIST, self).__init__()
 
         logger.info("Initializing ResNet18 for Fashion MNIST")
@@ -42,11 +42,17 @@ class ResNet18ForFMNIST(nn.Module):
             f"Modified fully connected layer to output {config.data.num_classes} classes"
         )
 
-    def forward(self, x):
+    def forward(self, x: torch.Tensor) -> nn.Module:
+        """
+        Forward function for the model.
+        """
         return self.resnet18(x)
 
 
-def get_model(config: DictConfig):
+def get_model(config: DictConfig) -> nn.Module:
+    """
+    Access the model.
+    """
     model = ResNet18ForFMNIST(config)
     logger.info("Model instantiated and moved to device")
     return model.to(device)
