@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - cont_integ
   pull_request:
     branches:
       - main
@@ -98,13 +99,13 @@ jobs:
           coverage xml
 
       - name: Upload Coverage Report
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: coverage-report
           path: coverage*.xml
 
       - name: Upload Test Results
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: pytest-report
           path: pytest-report.xml
