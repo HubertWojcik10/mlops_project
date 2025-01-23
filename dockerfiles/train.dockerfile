@@ -11,6 +11,7 @@ COPY pyproject.toml pyproject.toml
 COPY src/ src/
 COPY configs/ configs/
 COPY data/ data/
+COPY models/ models/
 
 # Install dvc with Google Storage support
 RUN pip install dvc[gs]

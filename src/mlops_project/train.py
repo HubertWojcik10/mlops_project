@@ -83,13 +83,7 @@ def train_sweep(config: DictConfig):
 
         # Track the best model
         current_val_loss = float('inf')
-
-        # with torch.profiler.profile(
-        #     activities=[torch.profiler.ProfilerActivity.CPU, torch.profiler.ProfilerActivity.CUDA],
-        #     record_shapes=True,
-        #     profile_memory=True,
-        #     with_stack=True
-        # ) as prof:
+        
         for epoch in range(wb_config.experiment['epochs']):
             wandb.log({'epoch': epoch})
             train_loss, val_loss = train(model, train_loader, val_loader, loss_fn, optimizer, epoch)
