@@ -12,6 +12,7 @@ from torch.utils.data import RandomSampler
 from torchvision import transforms
 from torch import nn
 from typing import Dict
+import os
 
 CONFIG_PATH = "./configs/config.yaml"
 tags_metadata = [
@@ -36,8 +37,11 @@ def load_model(config: DictConfig, path: str) -> nn.Module:
         Load the resnet-18 model.
     """
     model = ResNet18ForFMNIST(config=config)
+    if os.path.exists(path):
+        model.load_state_dict(torch.load(path))
+    else:
+        print("Running on an empty model.")
 
-    model.load_state_dict(torch.load(path))
     model.eval()
     return model
 
@@ -53,7 +57,7 @@ transform = transforms.Compose([
 
 @app.get("/")
 def root() -> Dict[str, str]:
-    """ 
+    """
         Homepage & Health check.
     """
     response = {
@@ -146,7 +150,7 @@ async def predict_upload(file: UploadFile = File(...), model_path: str = "./mode
         image = Image.open(io.BytesIO(contents))
     except HTTPException as exc:
         raise HTTPException(status_code=400, detail="Invalid image file") from exc
-    except (IOError, OSError) as exc:  
+    except (IOError, OSError) as exc:
         raise HTTPException(status_code=400, detail="Invalid image file") from exc
 
     try:

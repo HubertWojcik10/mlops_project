@@ -38,7 +38,7 @@ def test_predict_sample_endpoint() -> None:
     """
         Test the predict sample endpoint.
     """
-    
+
     response = client.get("/predict/sample/0")
     assert response.status_code == 200
     assert "prediction" in response.json()
@@ -55,7 +55,7 @@ def test_predict_upload_endpoint() -> None:
     """
         Test the predict upload endpoint.
     """
-    
+
     # create dummy image for testing
     img = Image.new('RGB', (28, 28), color='white')
     img_byte_arr = io.BytesIO()

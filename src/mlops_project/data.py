@@ -18,6 +18,7 @@ def download_and_preprocess(config: DictConfig):
     os.makedirs(raw_dir, exist_ok=True)
     os.makedirs(processed_dir, exist_ok=True)
 
+
     # Define dataset transformation
     transform = transforms.Compose(
         [
