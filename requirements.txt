@@ -48,7 +48,7 @@ dvc-studio-client==0.21.0
 dvc-task==0.40.2
 entrypoints==0.4
 exceptiongroup==1.2.2
-fastapi==0.115.6
+fastapi==0.115.8
 filelock==3.16.1
 flatten-dict==0.4.2
 flufl.lock==8.1.0
